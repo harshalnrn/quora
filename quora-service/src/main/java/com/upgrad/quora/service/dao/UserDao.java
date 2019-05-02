@@ -1,5 +1,6 @@
 package com.upgrad.quora.service.dao;
 
+import com.upgrad.quora.service.entity.UserAuthTokenEntity;
 import com.upgrad.quora.service.entity.UserEntity;
 import lombok.Data;
 import org.springframework.stereotype.Repository;
@@ -38,6 +39,21 @@ public class UserDao {
       userByEmailQuery.setParameter("userByEmail", email);
       return userByEmailQuery.getSingleResult();
     } catch (NoResultException nrex) {
+      return null;
+    }
+  }
+
+  public UserAuthTokenEntity createAuthToken(final UserAuthTokenEntity userAuthTokenEntity){
+    entityManager.persist(userAuthTokenEntity);
+    return userAuthTokenEntity;
+  }
+
+  public UserAuthTokenEntity getAuthToken(String access_token){
+    try {
+      return entityManager.createNamedQuery("userAuthTokenByAccessToken", UserAuthTokenEntity.class)
+              .setParameter("access_token",access_token)
+              .getSingleResult();
+    } catch (NoResultException nre) {
       return null;
     }
   }
