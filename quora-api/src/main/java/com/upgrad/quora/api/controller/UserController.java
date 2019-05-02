@@ -1,12 +1,16 @@
 package com.upgrad.quora.api.controller;
 
 import com.upgrad.quora.api.model.SigninResponse;
+import com.upgrad.quora.api.model.SignoutResponse;
 import com.upgrad.quora.api.model.SignupUserRequest;
 import com.upgrad.quora.api.model.SignupUserResponse;
 import com.upgrad.quora.service.business.UserBusinessService;
 import com.upgrad.quora.service.entity.UserAuthTokenEntity;
 import com.upgrad.quora.service.entity.UserEntity;
 import com.upgrad.quora.service.exception.AuthenticationFailedException;
+import com.upgrad.quora.service.exception.AuthorizationFailedException;
+import com.upgrad.quora.service.exception.SignOutRestrictedException;
+import lombok.Data;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
@@ -20,6 +24,7 @@ import org.springframework.web.bind.annotation.RestController;
 import java.util.Base64;
 import java.util.UUID;
 
+@Data
 @RestController
 @RequestMapping("/user") // confusion with root context for rest calls (i.e default, custom)
 public class UserController {
@@ -82,4 +87,17 @@ public class UserController {
 
     return new ResponseEntity<SigninResponse>(signinResponse, httpHeaders, HttpStatus.OK);
   } // why final required with parameter
+
+
+   @RequestMapping(method = RequestMethod.POST,path = "/signout", produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
+    public ResponseEntity<SignoutResponse> userSignOut(
+          @RequestHeader("AccessToken") String authorisationHeader)     // Requesting the Access Token in the Request Header
+          throws SignOutRestrictedException {
+
+    UserAuthTokenEntity userAuthTokenEntity = userBusinessService.signOut(authorisationHeader);
+    SignoutResponse signoutResponse = new SignoutResponse();
+    signoutResponse.setId(userAuthTokenEntity.getUsers().getUuid());
+    signoutResponse.setMessage("SIGNED OUT SUCCESSFULLY");
+    return new ResponseEntity<SignoutResponse>(signoutResponse,HttpStatus.OK);
+  }
 }
