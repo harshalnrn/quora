@@ -4,6 +4,7 @@ import com.upgrad.quora.service.dao.UserDao;
 import com.upgrad.quora.service.entity.UserAuthTokenEntity;
 import com.upgrad.quora.service.entity.UserEntity;
 import com.upgrad.quora.service.exception.AuthenticationFailedException;
+import com.upgrad.quora.service.exception.SignUpRestrictedException;
 import lombok.Data;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -23,7 +24,19 @@ public class UserBusinessService {
 
   // @Autowired private JwtTokenProvider jwtTokenProvider;
 
-  public UserEntity signUp(UserEntity userEntity) {
+  public UserEntity signUp(UserEntity userEntity) throws SignUpRestrictedException {
+
+    //Check if the user exists for given username
+    UserEntity existingUserEntity = userDao.findUserByUserName(userEntity.getUserName());
+    if(existingUserEntity != null){
+      throw new SignUpRestrictedException("SGR-001" , "Try any other Username, this Username has already been taken");
+    }
+
+    //Check if the user exists for given email
+    existingUserEntity = userDao.findUserByEmail(userEntity.getEmail());
+    if(existingUserEntity != null){
+      throw new SignUpRestrictedException("SGR-002","This user has already been registered, try with any other emailId");
+    }
 
     String[] encryptedText = passwordCryptographyProvider.encrypt(userEntity.getPassword());
     userEntity.setSalt(encryptedText[0]);
