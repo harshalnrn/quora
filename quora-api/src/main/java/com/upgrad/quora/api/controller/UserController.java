@@ -7,6 +7,7 @@ import com.upgrad.quora.service.business.UserBusinessService;
 import com.upgrad.quora.service.entity.UserAuthTokenEntity;
 import com.upgrad.quora.service.entity.UserEntity;
 import com.upgrad.quora.service.exception.AuthenticationFailedException;
+import com.upgrad.quora.service.exception.SignUpRestrictedException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
@@ -31,10 +32,8 @@ public class UserController {
       path = "/signup",
       consumes = MediaType.APPLICATION_JSON_UTF8_VALUE,
       produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
-  public ResponseEntity<SignupUserResponse> userSignUp(final SignupUserRequest signupUserRequest) {
+  public ResponseEntity<SignupUserResponse> userSignUp(final SignupUserRequest signupUserRequest) throws SignUpRestrictedException {
 
-    SigninResponse signinResponse =
-        new SigninResponse(); // since each end url has unique model here, autowiring makes sense
     UserEntity userEntity = new UserEntity();
     userEntity.setUuid(UUID.randomUUID().toString());
     userEntity.setFirstName(signupUserRequest.getFirstName());
