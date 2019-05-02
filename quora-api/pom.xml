@@ -36,6 +36,7 @@
             <version>2.6.1</version>
             <scope>compile</scope>
         </dependency>
+        <!--below is the module dependency. check how does root pom know where to pick from-->
         <dependency>
             <groupId>com.upgrad.quora</groupId>
             <artifactId>quora-service</artifactId>
