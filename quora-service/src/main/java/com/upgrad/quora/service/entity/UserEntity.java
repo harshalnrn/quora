@@ -9,71 +9,74 @@ import java.util.List;
 
 @Entity
 @Data
-@Table(name = "USERS", schema = "quora",uniqueConstraints = @UniqueConstraint(columnNames = "email"))
-public class Users {
+@Table(name = "USERS",uniqueConstraints = @UniqueConstraint(columnNames = "email")) //public schema
+@NamedQueries({
+@NamedQuery(name="findByUsername", query = "select u from UserEntity u where u.username=:userByUserName"),
+@NamedQuery(name="findByEmail",query="select u from UserEntity u where u.email=:userByEmail")})
+public class UserEntity {
   @Id
   @Column(name = "id")
-  @GeneratedValue(strategy = GenerationType.AUTO)
-  @Size()
+  @GeneratedValue(strategy = GenerationType.IDENTITY)
+ // @Size()
   private Integer id;
 
   @Column(name = "uuid")
   @NotNull
-  @Size()
+ // @Size()
   private String uuid;
 
-  @Column(name = "firstName")
+  @Column(name = "firstname")
   @NotNull
-  @Size()
+  //@Size()
   private String firstName;
 
-  @Column(name = "lastName")
+  @Column(name = "lastname")
   @NotNull
-  @Size()
+  //@Size()
   private String lastName;
 
-  @Column(name = "userName")
+  @Column(name = "username")
   @NotNull
-  @Size()
+  //@Size()
   private String username;
 
  @Column(name = "email")
   @NotNull
- @Size()
+ //@Size()
 
   private String email;
 
   @Column(name = "password")
   @NotNull
-  @Size()
+  //@Size()
   private String password;
 
   @Column(name = "salt")
   @NotNull
-  @Size()
+  //@Size()
   private String salt;
 
   @Column(name = "country")
-  @Size()
+  //@Size()
   private String country;
 
-  @Column(name = "aboutMe")
-  @Size()
+  @Column(name = "aboutme")
+  //@Size()
   private String aboutme;
 
   @Column(name = "dob")
-  @Size()
+  //@Size()
   private String dob;
 
   @Column(name = "role")
-  @Size()
+  //@Size()
   private String role;
 
-  @Column(name = "contactNumber")
-  @Size()
+  @Column(name = "contactnumber")
+  //@Size()
   private String contactNumber;
 
-  @OneToMany private List<Answers> answersList;
+  @OneToMany private List<AnswerEntity> answersList;
 
-  @OneToMany private List<Questions> questionsList;
+  @OneToMany private List<QuestionsEntity> questionsList;
 }

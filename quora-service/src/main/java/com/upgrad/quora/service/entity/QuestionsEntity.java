@@ -5,15 +5,17 @@ import lombok.Data;
 import javax.persistence.*;
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;
-import java.sql.Time;
+import java.time.ZonedDateTime;
+import java.util.List;
 
 @Entity
 @Data
-@Table(name = "ANSWER")
-public class Answers {
+@Table(name = "QUESTION")
+public class QuestionsEntity {
+
   @Id
   @Column(name = "id")
-  @GeneratedValue(strategy = GenerationType.AUTO)
+  @GeneratedValue(strategy = GenerationType.IDENTITY)
   @Size()
   private Integer id;
 
@@ -22,25 +24,23 @@ public class Answers {
   @Size()
   private String uuid;
 
-  @Column(name = "ans")
+  @Column(name = "content")
   @NotNull
   @Size()
-  private String ans;
+  private String content;
 
   @Column(name = "date")
   @NotNull
   @Size()
-  private Time date;
+  private ZonedDateTime date;
 
   @ManyToOne
-  @JoinColumn(name = "user_id")
+  @JoinColumn(name = "user_id ")
   @NotNull
   @Size()
-  private Users users; // takes primary key of users
+  private UserEntity userEntity;
 
-  @ManyToOne
-  @JoinColumn(name = "question_id")
-  @NotNull
+  @OneToMany
   @Size()
-  private Integer question_id;
+  private List<AnswerEntity> answersOfQuestion;
 }

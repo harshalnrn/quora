@@ -4,46 +4,46 @@ import lombok.Data;
 
 import javax.persistence.*;
 import javax.validation.constraints.NotNull;
-import javax.validation.constraints.Size;
-import java.sql.Time;
+import java.time.ZonedDateTime;
 
 @Entity
 @Data
 @Table(name = "USER_AUTH")
-public class UserAuthTokens {
+public class UserAuthTokenEntity {
 
   @Id
   @Column(name = "ID")
-  @GeneratedValue(strategy = GenerationType.AUTO)
-  @Size()
+  @GeneratedValue(strategy = GenerationType.IDENTITY)
+  //@Size()
   private Integer id;
 
   @Column(name = "uuid")
   @NotNull
-  @Size()
+  //@Size()
   private String uuid;
 
+  @OneToOne
   @JoinColumn(name="USER_ID")
   @NotNull
-  @Size()
-  private Users users; //column takes primary key of users
+  //@Size()
+  private UserEntity users; //column takes primary key of users
 
   @Column(name = "ACCESS_TOKEN")
   @NotNull
-  @Size()
+  //@Size()
   private String access_token;
 
   @Column(name = "EXPIRES_AT")
   @NotNull
-  @Size()
-  private Time expiresAt;
+  //@Size()
+  private ZonedDateTime expiresAt;
 
   @Column(name = "LOGIN_AT")
   @NotNull
-  @Size()
-  private Time loginAt;
+  //@Size()
+  private ZonedDateTime loginAt;
 
   @Column(name = "LOGOUT_AT")
-  @Size()
-  private Time logoutAt;
+  //@Size()
+  private ZonedDateTime logoutAt;
 }
