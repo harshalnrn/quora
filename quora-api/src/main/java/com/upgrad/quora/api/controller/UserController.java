@@ -8,13 +8,9 @@ import com.upgrad.quora.service.business.UserBusinessService;
 import com.upgrad.quora.service.entity.UserAuthTokenEntity;
 import com.upgrad.quora.service.entity.UserEntity;
 import com.upgrad.quora.service.exception.AuthenticationFailedException;
-
-import com.upgrad.quora.service.exception.AuthorizationFailedException;
 import com.upgrad.quora.service.exception.SignOutRestrictedException;
-import lombok.Data;
-
 import com.upgrad.quora.service.exception.SignUpRestrictedException;
-
+import lombok.Data;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
@@ -66,7 +62,7 @@ public class UserController {
     return new ResponseEntity<SignupUserResponse>(userResponse, HttpStatus.CREATED);
   }
 
-  @RequestMapping(                                           //spring default exception handling for internal error
+  @RequestMapping( // spring default exception handling for internal error
       method = RequestMethod.POST,
       value = "/signin",
       produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
@@ -77,9 +73,7 @@ public class UserController {
     SigninResponse signinResponse = new SigninResponse();
     byte[] decode = Base64.getDecoder().decode(authorisationHeader.split("Basic ")[1]);
     String decodedText = new String(decode); // convert byte[] to string
-      System.out.print(decodedText);
     String[] credentials = decodedText.split(":");
-    System.out.println(credentials[0]);
     UserAuthTokenEntity userAuthTokenEntity =
         userBusinessService.userLogin(credentials[0], credentials[1]);
     signinResponse.setId(userAuthTokenEntity.getUsers().getUuid());

@@ -29,7 +29,7 @@ public class UserBusinessService {
   public UserEntity signUp(UserEntity userEntity) throws SignUpRestrictedException {
 
     //Check if the user exists for given username
-    UserEntity existingUserEntity = userDao.findUserByUserName(userEntity.getUserName());
+    UserEntity existingUserEntity = userDao.findUserByUserName(userEntity.getUsername());
     if(existingUserEntity != null){
       throw new SignUpRestrictedException("SGR-001" , "Try any other Username, this Username has already been taken");
     }
@@ -74,11 +74,11 @@ public class UserBusinessService {
         userDao.createAuthToken(userAuthTokenEntity);   // UserAuthtoken should be persisted in the DB for future reference
         return userAuthTokenEntity;
       } else {
-          throw new AuthenticationFailedException("ATH-001", "This username does not exist");
+          throw new AuthenticationFailedException("ATH-002", "Password failed");
       }
       }
       else{
-        throw new AuthenticationFailedException("ATH-002", "Password failed");
+        throw new AuthenticationFailedException("ATH-001", "This username does not exist");
         }
     }
 
