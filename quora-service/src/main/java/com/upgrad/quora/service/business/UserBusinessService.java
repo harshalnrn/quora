@@ -95,6 +95,38 @@ public class UserBusinessService {
         }
     }
 
+
+  public UserEntity deleteUserByUuid(final String userUuid, final String authorization) throws AuthorizationFailedException, UserNotFoundException {
+
+    UserAuthTokenEntity userAuthTokenEntity = userDao.getAuthToken(authorization);
+
+    if(userAuthTokenEntity == null){
+      throw new AuthorizationFailedException("ATHR-001","User has not signed in");
+    }
+
+    //Check user signed out condition
+    ZonedDateTime loggedOutTime = userAuthTokenEntity.getLogoutAt();
+    ZonedDateTime now = ZonedDateTime.now();
+    if(loggedOutTime != null && now.isAfter(loggedOutTime)){
+      throw new AuthorizationFailedException("ATHR-002","User is signed out");
+    }
+
+    UserEntity user = userAuthTokenEntity.getUsers();
+
+    if(("nonadmin").equals(user.getRole())){
+      throw new AuthorizationFailedException("ATHR-003","Unauthorized Access, Entered user is not an admin");
+    }
+
+    //Check if the user exists for the given uuid
+    UserEntity userToDelete = userDao.findUserByUuid(userUuid);
+
+    if(userToDelete == null){
+      throw new UserNotFoundException("USR-001","User with entered uuid to be deleted does not exist");
+    }
+
+    return userDao.deleteUser(userToDelete);
+  }
+
     /*
     This method is used to fetch all the details of a signed in and Authorized user
      */
@@ -111,4 +143,5 @@ public class UserBusinessService {
       } else
         return userEntity;
     }
+
 }
