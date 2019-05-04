@@ -3,10 +3,8 @@ package com.upgrad.quora.service.business;
 import com.upgrad.quora.service.dao.UserDao;
 import com.upgrad.quora.service.entity.UserAuthTokenEntity;
 import com.upgrad.quora.service.entity.UserEntity;
-import com.upgrad.quora.service.exception.AuthenticationFailedException;
+import com.upgrad.quora.service.exception.*;
 
-import com.upgrad.quora.service.exception.SignOutRestrictedException;
-import com.upgrad.quora.service.exception.SignUpRestrictedException;
 import lombok.Data;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -93,4 +91,18 @@ public class UserBusinessService {
           throw new SignOutRestrictedException("SGR-001", "User is not Signed in");
         }
     }
+
+   public UserEntity getUser(final String userUuid, final String access_token) throws AuthorizationFailedException, UserNotFoundException {
+      UserAuthTokenEntity userAuthToken = userDao.getAuthToken(access_token);
+      UserEntity userEntity = userDao.getUserbyUuid(userUuid);
+      if (userAuthToken==null) {    // If accessToken does not exist in the Database
+        throw new AuthorizationFailedException("ATHR-001", "User has not Signed in");
+      } else if (userEntity==null) {    // If user UUID does not exist in the Database
+        throw new UserNotFoundException("USR-001","User with entered uuid does not exist");
+      } else if (!userAuthToken.getLogoutAt().equals(userAuthToken.getExpiresAt())) {   // Checking if user has signed out
+        throw new AuthorizationFailedException("ATHR-002", "User is signed out.Sign in first to get user details");
+      } else
+        return userEntity;
+    }
+
 }
