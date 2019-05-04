@@ -66,7 +66,7 @@ public class UserBusinessService {
         userAuthTokenEntity.setAccess_token(accessToken);
         userAuthTokenEntity.setUsers(userEntity);
         userAuthTokenEntity.setLoginAt(issuedTime);
-        userAuthTokenEntity.setLogoutAt(expiryTime);
+        // userAuthTokenEntity.setLogoutAt(expiryTime); shall be set after sign out
         userAuthTokenEntity.setExpiresAt(expiryTime); // why 2 columns
         userAuthTokenEntity.setUuid("login end url");
         userDao.createAuthToken(userAuthTokenEntity);   // UserAuthtoken should be persisted in the DB for future reference
@@ -80,29 +80,33 @@ public class UserBusinessService {
         }
     }
 
+  //login-logout auditing is done in user-auth-token-entity
     public UserAuthTokenEntity signOut(String access_token) throws SignOutRestrictedException {
-      UserAuthTokenEntity userAuthToken = userDao.getAuthToken(access_token);
+      UserAuthTokenEntity userAuthToken = userDao.getAuthToken(access_token); // Fetching auth-token entity
       // Checking if the Access token entered matches the Access token in the DataBase and null check
         if (userAuthToken!=null && access_token.equals(userAuthToken.getAccess_token())) {
           final ZonedDateTime now = ZonedDateTime.now();
-          userAuthToken.setLogoutAt(now);   // Updating the Logout Time of the user
+          userAuthToken.setLogoutAt(now);   // Setting the Logout Time of the user
           return userAuthToken;
         } else {
           throw new SignOutRestrictedException("SGR-001", "User is not Signed in");
         }
     }
 
-   public UserEntity getUser(final String userUuid, final String access_token) throws AuthorizationFailedException, UserNotFoundException {
-      UserAuthTokenEntity userAuthToken = userDao.getAuthToken(access_token);
-      UserEntity userEntity = userDao.getUserbyUuid(userUuid);
+    /*
+    This method is used to fetch all the details of a signed in and Authorized user
+     */
+   public UserEntity getUserDetails(final String userUuid, final String access_token) throws AuthorizationFailedException, UserNotFoundException {
+      final UserAuthTokenEntity userAuthToken = userDao.getAuthToken(access_token);
+      final UserEntity userEntity = userDao.getUserbyUuid(userUuid);
       if (userAuthToken==null) {    // If accessToken does not exist in the Database
         throw new AuthorizationFailedException("ATHR-001", "User has not Signed in");
       } else if (userEntity==null) {    // If user UUID does not exist in the Database
         throw new UserNotFoundException("USR-001","User with entered uuid does not exist");
-      } else if (!userAuthToken.getLogoutAt().equals(userAuthToken.getExpiresAt())) {   // Checking if user has signed out
+        // Checking if user has signed out
+      } else if (!userAuthToken.getLogoutAt().equals(userAuthToken.getExpiresAt())) {
         throw new AuthorizationFailedException("ATHR-002", "User is signed out.Sign in first to get user details");
       } else
         return userEntity;
     }
-
 }
