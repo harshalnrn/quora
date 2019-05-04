@@ -12,7 +12,8 @@ import java.util.List;
 @Table(name = "USERS",uniqueConstraints = @UniqueConstraint(columnNames = "email")) //public schema
 @NamedQueries({
 @NamedQuery(name="findByUsername", query = "select u from UserEntity u where u.username=:userByUserName"),
-@NamedQuery(name="findByEmail",query="select u from UserEntity u where u.email=:userByEmail")})
+@NamedQuery(name="findByEmail",query="select u from UserEntity u where u.email=:userByEmail"),
+@NamedQuery(name="findByUuid",query="select u from UserEntity u where u.uuid=:uuid")})
 public class UserEntity {
   @Id
   @Column(name = "id")
@@ -76,7 +77,11 @@ public class UserEntity {
   //@Size()
   private String contactNumber;
 
-  @OneToMany private List<AnswerEntity> answersList;
+  @OneToMany
+  @JoinColumn(name="user_id")
+  private List<AnswerEntity> answersList;
 
-  @OneToMany private List<QuestionsEntity> questionsList;
+  @OneToMany
+  @JoinColumn(name="user_id")
+  private List<QuestionsEntity> questionsList;
 }

@@ -26,7 +26,7 @@ public class UserAuthTokenEntity {
   //@Size()
   private String uuid;
 
-  @OneToOne
+  @ManyToOne(cascade = CascadeType.REMOVE)
   @JoinColumn(name="USER_ID")
   @NotNull
   //@Size()
