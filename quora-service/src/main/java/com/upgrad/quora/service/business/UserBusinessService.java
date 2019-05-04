@@ -95,6 +95,9 @@ public class UserBusinessService {
     }
 
 
+  /*
+ This method is used to delete the details of a signed in and Authorized user by an Admin user
+  */
   public UserEntity deleteUserByUuid(final String userUuid, final String authorization) throws AuthorizationFailedException, UserNotFoundException {
 
     UserAuthTokenEntity userAuthTokenEntity = userDao.getAuthToken(authorization);

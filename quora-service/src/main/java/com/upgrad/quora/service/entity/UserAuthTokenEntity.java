@@ -1,7 +1,6 @@
 package com.upgrad.quora.service.entity;
 
 import lombok.Data;
-
 import javax.persistence.*;
 import javax.validation.constraints.NotNull;
 import java.time.ZonedDateTime;
