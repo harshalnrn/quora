@@ -3,10 +3,8 @@ package com.upgrad.quora.service.business;
 import com.upgrad.quora.service.dao.UserDao;
 import com.upgrad.quora.service.entity.UserAuthTokenEntity;
 import com.upgrad.quora.service.entity.UserEntity;
-import com.upgrad.quora.service.exception.AuthenticationFailedException;
+import com.upgrad.quora.service.exception.*;
 
-import com.upgrad.quora.service.exception.SignOutRestrictedException;
-import com.upgrad.quora.service.exception.SignUpRestrictedException;
 import lombok.Data;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -82,17 +80,35 @@ public class UserBusinessService {
         }
     }
 
+
  //login-logout auditing is done in user-auth-token-entity
     public UserAuthTokenEntity signOut(String access_token) throws SignOutRestrictedException {
-      UserAuthTokenEntity userAuthToken = userDao.getAuthToken(access_token); //get authtoken entity, to set logout time
+      UserAuthTokenEntity userAuthToken = userDao.getAuthToken(access_token); //Fetching authtoken entity
       // Checking if the Access token entered matches the Access token in the DataBase and null check
-        if (userAuthToken!=null && access_token.equals(userAuthToken.getAccess_token()))   //why 2 conditions check?. only one is enough
+        if (userAuthToken!=null && access_token.equals(userAuthToken.getAccess_token()))   
         {
           final ZonedDateTime now = ZonedDateTime.now();
-          userAuthToken.setLogoutAt(now);   // Updating the Logout Time of the user
+          userAuthToken.setLogoutAt(now);   // Setting the Logout Time of the user
           return userAuthToken;
         } else {
           throw new SignOutRestrictedException("SGR-001", "User is not Signed in");
         }
+    }
+
+    /*
+    This method is used to fetch all the details of a signed in and Authorized user
+     */
+   public UserEntity getUserDetails(final String userUuid, final String access_token) throws AuthorizationFailedException, UserNotFoundException {
+      final UserAuthTokenEntity userAuthToken = userDao.getAuthToken(access_token);
+      final UserEntity userEntity = userDao.getUserbyUuid(userUuid);
+      if (userAuthToken==null) {    // If accessToken does not exist in the Database
+        throw new AuthorizationFailedException("ATHR-001", "User has not Signed in");
+      } else if (userEntity==null) {    // If user UUID does not exist in the Database
+        throw new UserNotFoundException("USR-001","User with entered uuid does not exist");
+        // Checking if user has signed out
+      } else if (!userAuthToken.getLogoutAt().equals(userAuthToken.getExpiresAt())) {
+        throw new AuthorizationFailedException("ATHR-002", "User is signed out.Sign in first to get user details");
+      } else
+        return userEntity;
     }
 }
