@@ -58,6 +58,7 @@ public class UserDao {
     }
   }
 
+
   public UserEntity findUserByUuid(String uuid){
     try {
       TypedQuery<UserEntity> userByUuidQuery = entityManager.createNamedQuery("findByUuid", UserEntity.class);
@@ -72,4 +73,14 @@ public class UserDao {
     entityManager.remove(userEntity);
     return  userEntity;
   }
+
+  public UserEntity getUserbyUuid(final String userUuid) {
+    try {
+      return entityManager.createNamedQuery("userByUuid", UserEntity.class).setParameter("uuid", userUuid)
+              .getSingleResult();
+    } catch (NoResultException nre) {
+      return null;
+    }
+  }
+
 }
