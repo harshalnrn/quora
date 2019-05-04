@@ -35,15 +35,17 @@ public class RestExceptionHandler {
     @ExceptionHandler(AuthorizationFailedException.class)
 
     public ResponseEntity<ErrorResponse> resourceUnauthorizedException(AuthorizationFailedException exe , WebRequest webRequest){
-        return new ResponseEntity<ErrorResponse>(new ErrorResponse().code(exe.getCode()).message(exe.getErrorMessage()) , HttpStatus.UNAUTHORIZED);
+        return new ResponseEntity<ErrorResponse>(new ErrorResponse().code(exe.getCode()).message(exe.getErrorMessage()) , HttpStatus.FORBIDDEN);
     }
 
     @ExceptionHandler(UserNotFoundException.class)
-    public ResponseEntity<ErrorResponse> resourceNotFoundException(UserNotFoundException exe , WebRequest webRequest){
-        return new ResponseEntity<ErrorResponse>(new ErrorResponse().code(exe.getCode()).message(exe.getErrorMessage()) , HttpStatus.NOT_FOUND);
+    public ResponseEntity<ErrorResponse> resourceNotFoundException(UserNotFoundException exe , WebRequest webRequest) {
+        return new ResponseEntity<ErrorResponse>(new ErrorResponse().code(exe.getCode()).message(exe.getErrorMessage()), HttpStatus.NOT_FOUND);
+    }
 
-    public ResponseEntity<ErrorResponse> resourceNotFoundException(AuthorizationFailedException e,WebRequest webRequest){
-        return new ResponseEntity<ErrorResponse>(new ErrorResponse().code(e.getCode()).message(e.getErrorMessage()),HttpStatus.UNAUTHORIZED);
+    @ExceptionHandler(InvalidQuestionException.class)
+    public ResponseEntity<ErrorResponse> resourceNotFoundException(InvalidQuestionException e,WebRequest webRequest){
+        return new ResponseEntity<ErrorResponse>(new ErrorResponse().code(e.getCode()).message(e.getErrorMessage()),HttpStatus.NOT_FOUND);
 
     }
 }

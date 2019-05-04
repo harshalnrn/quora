@@ -1,19 +1,28 @@
 package com.upgrad.quora.service.business;
 
 import com.upgrad.quora.service.dao.QuestionDao;
+import com.upgrad.quora.service.dao.UserDao;
 import com.upgrad.quora.service.entity.QuestionsEntity;
 import com.upgrad.quora.service.entity.UserAuthTokenEntity;
+import com.upgrad.quora.service.entity.UserEntity;
 import com.upgrad.quora.service.exception.AuthorizationFailedException;
+import com.upgrad.quora.service.exception.InvalidQuestionException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.time.ZonedDateTime;
+
 @Service
 @Transactional(propagation = Propagation.REQUIRED)
 public class QuestionBusinessService {
 
-  @Autowired QuestionDao questionDao;
+  @Autowired
+  private QuestionDao questionDao;
+
+  @Autowired
+  private UserDao userDao;
 
   public void createQuestionService(QuestionsEntity questionsEntity, String accessToken)
       throws AuthorizationFailedException {
@@ -37,5 +46,52 @@ public class QuestionBusinessService {
     // persist question after 2 checks
     questionsEntity.setUserEntity(userAuthTokenEntity.getUsers());
     questionDao.createQuestion(questionsEntity);
+  }
+
+  //The method deletes the question for the given Uuid from the database if all of the following conditions are true
+  // - The user corresponding to the given accessToken is signed
+  // - The question for the given Uuid exists in the database
+  // - The user deleting the question is either owner of the question with the given Uuid or admin user
+  //Returns QuestionsEntity of the deleted question
+  //throws AuthorizationFailedException for the following conditions
+  // - The given accessToken does not exist
+  // - The user for given accessToken has signed out
+  // - The user for the given accessToken is not the owner of the question to be deleted and is a non-admin user
+  //throws InvalidQuestionException if the question with the given Uuid does not exist in the database
+  public QuestionsEntity deleteQuestionByUuid(String uuid, String accessToken) throws AuthorizationFailedException, InvalidQuestionException{
+
+    UserAuthTokenEntity userAuthTokenEntity = userDao.getAuthToken(accessToken);
+    if(userAuthTokenEntity == null){
+      throw new AuthorizationFailedException("ATHR-001" , "User has not signed in");
+    }
+
+    //Check if logged in user has signed out
+    if(hasUserSignedOut(userAuthTokenEntity.getLogoutAt())){
+      throw new AuthorizationFailedException("ATHR-002" , "User is signed out.Sign in first to delete a question");
+    }
+
+    QuestionsEntity questionToDelete = questionDao.getQuestionByUuid(uuid);
+
+    if(questionToDelete == null){
+      throw new InvalidQuestionException("QUES-001" , "Entered question uuid does not exist");
+    }
+
+    UserEntity loggedInUser = userAuthTokenEntity.getUsers();
+    UserEntity questionOwner = questionToDelete.getUserEntity();
+
+    //Check the logged user is neither question owner nor admin user
+    if(!questionOwner.getUuid().equals(loggedInUser.getUuid()) && !("admin").equals(loggedInUser.getRole())){
+      throw new AuthorizationFailedException("ATHR-003" , "Only the question owner or admin can delete the question");
+    }
+
+    QuestionsEntity questionDeleted = questionDao.deleteQuestionByUuid(questionToDelete);
+
+    return questionDeleted;
+  }
+
+  //Checks if the user has signed out by comparing if the current time is after the loggedOutTime received by the method
+  //Returns true if the currenttime is after loggedOutTime(signout has happened), false otherwise
+  public boolean hasUserSignedOut(ZonedDateTime loggedOutTime){
+      return ( loggedOutTime != null && ZonedDateTime.now().isAfter(loggedOutTime) );
   }
 }

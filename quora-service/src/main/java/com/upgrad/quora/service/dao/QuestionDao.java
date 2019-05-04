@@ -33,4 +33,24 @@ public class QuestionDao {
       return null;
     }
   }
+
+  //This method executes Named query to fetch the question from the database with corresponding Uuid
+  //Returns the question in case the question is found in the database
+  //Returns null if no question is found in the database
+  public QuestionsEntity getQuestionByUuid(String uuid){
+    try {
+      TypedQuery<QuestionsEntity> query = entityManager.createNamedQuery("findQuestionByUuid", QuestionsEntity.class);
+      query.setParameter("uuid", uuid);
+      return query.getSingleResult();
+    } catch (NoResultException nrex) {
+      return null;
+    }
+  }
+
+  //This method receives the QuestionEntity of the question to be deleted from the database
+  //Returns the QuestionEntity of deleted question
+  public QuestionsEntity deleteQuestionByUuid(QuestionsEntity questionEntity){
+    entityManager.remove(questionEntity);
+    return questionEntity;
+  }
 }
