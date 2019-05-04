@@ -66,6 +66,7 @@ public class UserBusinessService {
         userAuthTokenEntity.setAccess_token(accessToken);
         userAuthTokenEntity.setUsers(userEntity);
         userAuthTokenEntity.setLoginAt(issuedTime);
+
         // userAuthTokenEntity.setLogoutAt(expiryTime); shall be set after sign out
         userAuthTokenEntity.setExpiresAt(expiryTime); // why 2 columns
         userAuthTokenEntity.setUuid("login end url");
@@ -80,11 +81,13 @@ public class UserBusinessService {
         }
     }
 
+
   //login-logout auditing is done in user-auth-token-entity
     public UserAuthTokenEntity signOut(String access_token) throws SignOutRestrictedException {
       UserAuthTokenEntity userAuthToken = userDao.getAuthToken(access_token); // Fetching auth-token entity
       // Checking if the Access token entered matches the Access token in the DataBase and null check
-        if (userAuthToken!=null && access_token.equals(userAuthToken.getAccess_token())) {
+        if (userAuthToken!=null && access_token.equals(userAuthToken.getAccess_token()))   //why 2 conditions check?. only one is enough
+        {
           final ZonedDateTime now = ZonedDateTime.now();
           userAuthToken.setLogoutAt(now);   // Setting the Logout Time of the user
           return userAuthToken;
