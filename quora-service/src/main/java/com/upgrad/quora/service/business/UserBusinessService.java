@@ -4,7 +4,6 @@ import com.upgrad.quora.service.dao.UserDao;
 import com.upgrad.quora.service.entity.UserAuthTokenEntity;
 import com.upgrad.quora.service.entity.UserEntity;
 import com.upgrad.quora.service.exception.*;
-
 import lombok.Data;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -66,8 +65,7 @@ public class UserBusinessService {
         userAuthTokenEntity.setAccess_token(accessToken);
         userAuthTokenEntity.setUsers(userEntity);
         userAuthTokenEntity.setLoginAt(issuedTime);
-
-        // userAuthTokenEntity.setLogoutAt(expiryTime); shall be set after sign out
+        //userAuthTokenEntity.setLogoutAt(expiryTime); shall be set after sign out
         userAuthTokenEntity.setExpiresAt(expiryTime); // why 2 columns
         userAuthTokenEntity.setUuid("login end url");
         userDao.createAuthToken(userAuthTokenEntity);   // UserAuthtoken should be persisted in the DB for future reference
@@ -82,11 +80,11 @@ public class UserBusinessService {
     }
 
 
-  //login-logout auditing is done in user-auth-token-entity
+ //login-logout auditing is done in user-auth-token-entity
     public UserAuthTokenEntity signOut(String access_token) throws SignOutRestrictedException {
-      UserAuthTokenEntity userAuthToken = userDao.getAuthToken(access_token); // Fetching auth-token entity
+      UserAuthTokenEntity userAuthToken = userDao.getAuthToken(access_token); //Fetching authtoken entity
       // Checking if the Access token entered matches the Access token in the DataBase and null check
-        if (userAuthToken!=null && access_token.equals(userAuthToken.getAccess_token()))   //why 2 conditions check?. only one is enough
+        if (userAuthToken!=null && access_token.equals(userAuthToken.getAccess_token()))   
         {
           final ZonedDateTime now = ZonedDateTime.now();
           userAuthToken.setLogoutAt(now);   // Setting the Logout Time of the user
@@ -95,6 +93,35 @@ public class UserBusinessService {
           throw new SignOutRestrictedException("SGR-001", "User is not Signed in");
         }
     }
+
+
+  public UserEntity deleteUserByUuid(final String userUuid, final String authorization) throws AuthorizationFailedException, UserNotFoundException {
+
+    UserAuthTokenEntity userAuthTokenEntity = userDao.getAuthToken(authorization);
+    if(userAuthTokenEntity == null){
+      throw new AuthorizationFailedException("ATHR-001","User has not signed in");
+    }
+
+    //Check user signed out condition
+    final ZonedDateTime loggedOutTime = userAuthTokenEntity.getLogoutAt();
+    final ZonedDateTime now = ZonedDateTime.now();
+    if(loggedOutTime != null && now.isAfter(loggedOutTime)){
+      throw new AuthorizationFailedException("ATHR-002","User is signed out");
+    }
+    UserEntity user = userAuthTokenEntity.getUsers();
+    if(("nonadmin").equals(user.getRole())){
+      throw new AuthorizationFailedException("ATHR-003","Unauthorized Access, Entered user is not an admin");
+    }
+
+    //Check if the user exists for the given uuid
+    UserEntity userToDelete = userDao.getUserbyUuid(userUuid);
+
+    if(userToDelete == null){
+      throw new UserNotFoundException("USR-001","User with entered uuid to be deleted does not exist");
+    }
+
+    return userDao.deleteUser(userToDelete);
+  }
 
     /*
     This method is used to fetch all the details of a signed in and Authorized user
@@ -107,7 +134,7 @@ public class UserBusinessService {
       } else if (userEntity==null) {    // If user UUID does not exist in the Database
         throw new UserNotFoundException("USR-001","User with entered uuid does not exist");
         // Checking if user has signed out
-      } else if (!userAuthToken.getLogoutAt().equals(userAuthToken.getExpiresAt())) {
+      } else if (userAuthToken.getLogoutAt()!=null && userAuthToken.getLogoutAt().isBefore(ZonedDateTime.now())) {
         throw new AuthorizationFailedException("ATHR-002", "User is signed out.Sign in first to get user details");
       } else
         return userEntity;

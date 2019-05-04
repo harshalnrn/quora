@@ -78,7 +78,11 @@ public class UserEntity {
   //@Size()
   private String contactNumber;
 
-  @OneToMany private List<AnswerEntity> answersList;
+  @OneToMany
+  @JoinColumn(name="user_id")
+  private List<AnswerEntity> answersList;
 
-  @OneToMany private List<QuestionsEntity> questionsList;
+  @OneToMany
+  @JoinColumn(name="user_id")
+  private List<QuestionsEntity> questionsList;
 }
