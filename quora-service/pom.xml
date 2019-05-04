@@ -9,6 +9,10 @@
     </parent>
     <modelVersion>4.0.0</modelVersion>
 
+    <properties>
+    <postgresql.driver.version>42.2.2</postgresql.driver.version>
+    </properties>
+
     <artifactId>quora-service</artifactId>
     <dependencies>
         <dependency>
@@ -38,7 +42,17 @@
             <version>3.4.0</version>
         </dependency>
 
-
+        <dependency>
+            <groupId>org.projectlombok</groupId>
+            <artifactId>lombok</artifactId>
+            <version>1.18.6</version>
+            <scope>provided</scope>
+        </dependency>
+        <dependency>
+            <groupId>org.postgresql</groupId>
+            <artifactId>postgresql</artifactId>
+            <version>${postgresql.driver.version}</version>
+        </dependency>
     </dependencies>
 
 
