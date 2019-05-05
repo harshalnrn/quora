@@ -17,7 +17,7 @@ import java.time.ZonedDateTime;
 import java.util.UUID;
 
 @RestController
-@RequestMapping("/question")
+@RequestMapping("/")
 public class QuestionController {
 
     @Autowired
