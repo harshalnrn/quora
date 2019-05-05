@@ -76,7 +76,7 @@ public class QuestionBusinessService {
     }
 
     //Check if logged in user has signed out
-    if(hasUserSignedOut(userAuthTokenEntity.getLogoutAt())){
+    if(hasUserSignedOut(userAuthTokenEntity)){
       throw new AuthorizationFailedException("ATHR-002" , "User is signed out.Sign in first to delete a question");
     }
 
@@ -97,10 +97,13 @@ public class QuestionBusinessService {
     questionDao.deleteQuestionByUuid(questionToDelete);
   }
 
-  //Checks if the user has signed out by comparing if the current time is after the loggedOutTime received by the method
-  //Returns true if the currenttime is after loggedOutTime(signout has happened), false otherwise
-  public boolean hasUserSignedOut(ZonedDateTime loggedOutTime){
-      return ( loggedOutTime != null && ZonedDateTime.now().isAfter(loggedOutTime) );
+  //Checks if the user has signed out by comparing if the current time is after the loggedOutTime or current time is after the accesstoken expiry time received by the method
+  //Returns true if the currenttime is after loggedOutTime(signout has happened) or accesstoke expiry time, false otherwise
+  public boolean hasUserSignedOut(UserAuthTokenEntity userAuthTokenEntity){
+      ZonedDateTime now = ZonedDateTime.now();
+      ZonedDateTime loggedOutTime = userAuthTokenEntity.getLogoutAt();
+      ZonedDateTime accessTokenExpiryTime = userAuthTokenEntity.getExpiresAt();
+      return ( userAuthTokenEntity.getLogoutAt() != null && now.isAfter(loggedOutTime) ) || now.isAfter(accessTokenExpiryTime);
   }
 
     //The method retrieves all the questions from the database if all of the following conditions are true
@@ -119,7 +122,7 @@ public class QuestionBusinessService {
           throw new AuthorizationFailedException("ATHR-001" , "User has not signed in");
       }
 
-      if(hasUserSignedOut(userAuthTokenEntity.getLogoutAt())){
+      if(hasUserSignedOut(userAuthTokenEntity)){
           throw new AuthorizationFailedException("ATHR-002", "User is signed out.Sign in first to get all questions posted by a specific user");
       }
 
