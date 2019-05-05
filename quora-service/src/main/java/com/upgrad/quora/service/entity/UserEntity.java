@@ -13,7 +13,7 @@ import java.util.List;
 @NamedQueries({
 @NamedQuery(name="findByUsername", query = "select u from UserEntity u where u.username=:userByUserName"),
 @NamedQuery(name="findByEmail",query="select u from UserEntity u where u.email=:userByEmail"),
-@NamedQuery(name="findByUuid",query="select u from UserEntity u where u.uuid=:uuid")})
+@NamedQuery(name="findByUuid",query="select u from UserEntity u where u.uuid=:uuid"),
 @NamedQuery(name = "userByUuid", query = "select u from UserEntity u where u.uuid = :uuid")})
 
 public class UserEntity {

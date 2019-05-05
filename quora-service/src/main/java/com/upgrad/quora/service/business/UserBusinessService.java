@@ -96,7 +96,7 @@ public class UserBusinessService {
     }
 
 
-  public UserEntity deleteUserByUuid(final String userUuid, final String authorization) throws AuthorizationFailedException, UserNotFoundException {
+  public void deleteUserByUuid(final String userUuid, final String authorization) throws AuthorizationFailedException, UserNotFoundException {
 
     UserAuthTokenEntity userAuthTokenEntity = userDao.getAuthToken(authorization);
 
@@ -124,7 +124,7 @@ public class UserBusinessService {
       throw new UserNotFoundException("USR-001","User with entered uuid to be deleted does not exist");
     }
 
-    return userDao.deleteUser(userToDelete);
+    userDao.deleteUser(userToDelete);
   }
 
     /*
