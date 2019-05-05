@@ -116,7 +116,7 @@ public class QuestionBusinessService {
 
       UserAuthTokenEntity userAuthTokenEntity = userDao.getAuthToken(accessToken);
       if(userAuthTokenEntity == null){
-          throw new AuthorizationFailedException("ATHR-001" , "'User has not signed in");
+          throw new AuthorizationFailedException("ATHR-001" , "User has not signed in");
       }
 
       if(hasUserSignedOut(userAuthTokenEntity.getLogoutAt())){
