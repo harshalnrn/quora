@@ -9,6 +9,8 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.List;
+
 @Service
 @Transactional(propagation = Propagation.REQUIRED)
 public class QuestionBusinessService {
@@ -29,7 +31,7 @@ public class QuestionBusinessService {
     }
 
     // check if logged in user has signed out
-    if ((userAuthTokenEntity.getLogoutAt()!=null)) {
+    if ((userAuthTokenEntity.getLogoutAt() != null)) {
       throw new AuthorizationFailedException(
           "ATHR-002", "User is signed out.Sign in first to post a question");
     }
@@ -37,5 +39,10 @@ public class QuestionBusinessService {
     // persist question after 2 checks
     questionsEntity.setUserEntity(userAuthTokenEntity.getUsers());
     questionDao.createQuestion(questionsEntity);
+  }
+
+  public List<QuestionsEntity> getQuestionList(String accessToken)
+      throws AuthorizationFailedException {
+    return questionDao.getAllQuestions(accessToken);
   }
 }

@@ -10,6 +10,7 @@ import java.util.List;
 @Entity
 @Data
 @Table(name = "QUESTION")
+@NamedQuery(name="allQuestions",query ="select q from QuestionsEntity q")
 public class QuestionsEntity {
 
     @Id
