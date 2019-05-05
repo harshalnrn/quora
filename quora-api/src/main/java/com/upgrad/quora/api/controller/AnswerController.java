@@ -70,6 +70,6 @@ public class AnswerController {
 
         AnswerEditResponse editResponse = new AnswerEditResponse().id(answerUuid).status("ANSWER EDITED");
 
-        return new ResponseEntity<AnswerEditResponse>(editResponse , HttpStatus.OK);
+        return new ResponseEntity<AnswerEditResponse>(editResponse , HttpStatus.CREATED);
     }
 }
