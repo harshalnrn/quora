@@ -50,7 +50,7 @@ public class AnswerController {
 
         AnswerResponse answerResponse = new AnswerResponse().id(answerEntity.getUuid()).status("ANSWER CREATED");
 
-        return new ResponseEntity<AnswerResponse>( answerResponse , HttpStatus.OK);
+        return new ResponseEntity<AnswerResponse>( answerResponse , HttpStatus.CREATED);
     }
 
     //This method will be called when the request pattern is /answer/edit/{answerId} and incoming request is of type PUT
@@ -70,6 +70,6 @@ public class AnswerController {
 
         AnswerEditResponse editResponse = new AnswerEditResponse().id(answerUuid).status("ANSWER EDITED");
 
-        return new ResponseEntity<AnswerEditResponse>(editResponse , HttpStatus.CREATED);
+        return new ResponseEntity<AnswerEditResponse>(editResponse , HttpStatus.OK);
     }
 }
