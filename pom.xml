@@ -7,6 +7,11 @@
     <groupId>com.upgrad.quora</groupId>
     <artifactId>quora</artifactId>
     <version>1.0-SNAPSHOT</version>
+    <modules>
+        <module>quora-db</module>
+        <module>quora-service</module>
+        <module>quora-api</module>
+    </modules>
 
     <packaging>pom</packaging>
 
@@ -49,11 +54,5 @@
         <version>2.0.1.RELEASE</version>
     </parent>
 
-
-    <modules>
-        <module>quora-db</module>
-        <module>quora-service</module>
-        <module>quora-api</module>
-    </modules>
 
 </project>
