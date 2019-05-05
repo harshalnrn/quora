@@ -10,6 +10,9 @@ import java.util.List;
 @Entity
 @Data
 @Table(name = "QUESTION")
+@NamedQueries({
+        @NamedQuery(name = "QuestionByUuid" , query = "select q from QuestionsEntity q where q.uuid = :uuid")
+})
 public class QuestionsEntity {
 
     @Id
