@@ -11,6 +11,11 @@ import java.util.List;
 @Data
 @Table(name = "QUESTION")
 @NamedQueries({
+        @NamedQuery(name="allQuestions",query ="select q from QuestionsEntity q"),
+        @NamedQuery(name = "findQuestionByUuid" , query = "Select q from QuestionsEntity q where q.uuid = :uuid"),
+        @NamedQuery(name = "findQuestionsByUserId" , query = "select q from QuestionsEntity q where q.userEntity.uuid = :userUuid")
+})
+@NamedQueries({
         @NamedQuery(name = "QuestionByUuid" , query = "select q from QuestionsEntity q where q.uuid = :uuid")
 })
 public class QuestionsEntity {
@@ -43,6 +48,7 @@ public class QuestionsEntity {
     private UserEntity userEntity;
 
     @OneToMany
+    @JoinColumn(name = "user_id")
    // @Size()
     private List<AnswerEntity> answersOfQuestion;
 }
