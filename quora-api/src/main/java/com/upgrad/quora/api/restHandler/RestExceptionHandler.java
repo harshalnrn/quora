@@ -31,7 +31,7 @@ public class RestExceptionHandler {
 
     @ExceptionHandler(AuthorizationFailedException.class)
     public ResponseEntity<ErrorResponse> resourceNotFoundException(AuthorizationFailedException e,WebRequest webRequest){
-        return new ResponseEntity<ErrorResponse>(new ErrorResponse().code(e.getCode()).message(e.getErrorMessage()),HttpStatus.UNAUTHORIZED);
+        return new ResponseEntity<ErrorResponse>(new ErrorResponse().code(e.getCode()).message(e.getErrorMessage()),HttpStatus.FORBIDDEN);
     }
 
     @ExceptionHandler(InvalidQuestionException.class)

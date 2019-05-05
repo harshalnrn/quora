@@ -42,27 +42,31 @@ public class QuestionBusinessService {
     questionDao.createQuestion(questionsEntity);
   }
 
-
-  public QuestionsEntity getQuestion(String quesUuid) throws InvalidQuestionException
+/*
+The following method performs valid Authorization checks before a user is allowed to edit the question
+ */
+  public QuestionsEntity editQuestionService(String quesUuid,String accessToken) throws InvalidQuestionException,AuthorizationFailedException
   {
-    QuestionsEntity questionsEntity = questionDao.getQuestionByUuid(quesUuid);
+    final QuestionsEntity questionsEntity = questionDao.getQuestionByUuid(quesUuid);
+    final UserAuthTokenEntity userAuthTokenEntity = questionDao.ValidateAccessToken(accessToken);
     if (questionsEntity==null) {
       throw new InvalidQuestionException("QUES-001","Entered question uuid does not exist");
     }
-    return  questionsEntity;
-  }
-
-  public void editQuestionService(String quesUuid,String accessToken, QuestionsEntity questionsEntity) throws AuthorizationFailedException {
-    UserAuthTokenEntity userAuthTokenEntity = questionDao.ValidateAccessToken(accessToken);
     if (userAuthTokenEntity == null) {
       throw new AuthorizationFailedException("ATHR-001", "User has not signed in");
     } else if ((userAuthTokenEntity.getLogoutAt() != null) && userAuthTokenEntity.getLogoutAt().isBefore(ZonedDateTime.now())) {
       throw new AuthorizationFailedException("ATHR-002", "User is signed out.Sign in first to post a question");
-    } else if (questionsEntity.getUserEntity().getId() != userAuthTokenEntity.getUsers().getId()) {
+    }
+    // Checking if the User is owner of the question or not
+    else if (questionsEntity.getUserEntity().getId() != userAuthTokenEntity.getUsers().getId()) {
       throw new AuthorizationFailedException("ATHR-003", "Only the question owner can edit the question");
-    } else {
-      questionDao.editQuestion(questionsEntity);
-
+    }
+    return  questionsEntity;
+  }
+  /*
+  The following persists the edited question in the Database
+   */
+  public void updateQuestion(QuestionsEntity updatedQuestionsEntity) {
+      questionDao.editQuestion(updatedQuestionsEntity);
     }
   }
-}

@@ -45,6 +45,6 @@ public class QuestionDao {
   }
 
   public void editQuestion(QuestionsEntity questionsEntity) {
-    entityManager.merge(questionsEntity);
+    entityManager.merge(questionsEntity);   // Changing the state of the entity from detached to persistent
   }
 }
