@@ -11,6 +11,7 @@ import java.util.List;
 @Data
 @Table(name = "QUESTION")
 @NamedQueries({
+        @NamedQuery(name="allQuestions",query ="select q from QuestionsEntity q"),
         @NamedQuery(name = "findQuestionByUuid" , query = "Select q from QuestionsEntity q where q.uuid = :uuid"),
         @NamedQuery(name = "findQuestionsByUserId" , query = "select q from QuestionsEntity q where q.userEntity.uuid = :userUuid")
 })
