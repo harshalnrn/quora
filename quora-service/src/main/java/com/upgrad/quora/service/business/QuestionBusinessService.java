@@ -7,12 +7,14 @@ import com.upgrad.quora.service.entity.UserAuthTokenEntity;
 import com.upgrad.quora.service.entity.UserEntity;
 import com.upgrad.quora.service.exception.AuthorizationFailedException;
 import com.upgrad.quora.service.exception.InvalidQuestionException;
+import com.upgrad.quora.service.exception.UserNotFoundException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.time.ZonedDateTime;
+import java.util.List;
 
 @Service
 @Transactional(propagation = Propagation.REQUIRED)
@@ -49,7 +51,8 @@ public class QuestionBusinessService {
   }
 
   //The method deletes the question for the given Uuid from the database if all of the following conditions are true
-  // - The user corresponding to the given accessToken is signed
+  // - The given accessToken exists in the database
+  // - The user corresponding to the given accessToken is signed in
   // - The question for the given Uuid exists in the database
   // - The user deleting the question is either owner of the question with the given Uuid or admin user
   //Returns QuestionsEntity of the deleted question
@@ -93,5 +96,34 @@ public class QuestionBusinessService {
   //Returns true if the currenttime is after loggedOutTime(signout has happened), false otherwise
   public boolean hasUserSignedOut(ZonedDateTime loggedOutTime){
       return ( loggedOutTime != null && ZonedDateTime.now().isAfter(loggedOutTime) );
+  }
+
+    //The method retrieves all the questions from the database if all of the following conditions are true
+    // - The given accessToken exists in the database
+    // - The user corresponding to the given accessToken is signed in
+    // - The user for the given userUuid exists in the database
+    //Returns all the questions for the given userUuid
+    //throws AuthorizationFailedException for the following conditions
+    // - The given accessToken does not exist
+    // - The user for given accessToken has signed out
+    //throws UserNotFoundException if the user with the given userUuid does not exist in the database
+  public List<QuestionsEntity> getQuestionsForUserId(String userUuid, String accessToken) throws AuthorizationFailedException, UserNotFoundException{
+
+      UserAuthTokenEntity userAuthTokenEntity = userDao.getAuthToken(accessToken);
+      if(userAuthTokenEntity == null){
+          throw new AuthorizationFailedException("ATHR-001" , "'User has not signed in");
+      }
+
+      if(hasUserSignedOut(userAuthTokenEntity.getLogoutAt())){
+          throw new AuthorizationFailedException("ATHR-002", "User is signed out.Sign in first to get all questions posted by a specific user");
+      }
+
+      UserEntity user = userDao.getUserbyUuid(userUuid);
+      if(user == null){
+          throw new UserNotFoundException("USR-001", "User with entered uuid whose question details are to be seen does not exist");
+      }
+
+      return questionDao.getQuestionsForUserId(userUuid);
+
   }
 }

@@ -9,6 +9,7 @@ import javax.persistence.EntityManager;
 import javax.persistence.NoResultException;
 import javax.persistence.PersistenceContext;
 import javax.persistence.TypedQuery;
+import java.util.List;
 
 @Data
 @Repository
@@ -52,5 +53,18 @@ public class QuestionDao {
   public QuestionsEntity deleteQuestionByUuid(QuestionsEntity questionEntity){
     entityManager.remove(questionEntity);
     return questionEntity;
+  }
+
+  //This method executes Named query to fetch all the questions for the specified userUuid
+  //Returns all the questions for the given userUuid found in the database
+  //Returns null if there are no questions for the given userUuid - TODO - Check this
+  public List<QuestionsEntity> getQuestionsForUserId(String userUuid){
+      try {
+          TypedQuery<QuestionsEntity> query = entityManager.createNamedQuery("findQuestionsByUserId", QuestionsEntity.class);
+          query.setParameter("userUuid", userUuid);
+          return query.getResultList();
+      } catch (NoResultException nrex) {
+          return null;
+      }
   }
 }
