@@ -58,17 +58,6 @@ public class UserDao {
     }
   }
 
-
-  public UserEntity findUserByUuid(String uuid){
-    try {
-      TypedQuery<UserEntity> userByUuidQuery = entityManager.createNamedQuery("findByUuid", UserEntity.class);
-      userByUuidQuery.setParameter("uuid", uuid);
-      return userByUuidQuery.getSingleResult();
-    }catch (NoResultException nrex) {
-      return null;
-    }
-  }
-
   public UserEntity deleteUser(UserEntity userEntity){
     entityManager.remove(userEntity);
     return  userEntity;
@@ -82,5 +71,4 @@ public class UserDao {
       return null;
     }
   }
-
 }
