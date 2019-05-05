@@ -70,9 +70,8 @@ public class QuestionDao {
 
   //This method receives the QuestionEntity of the question to be deleted from the database
   //Returns the QuestionEntity of deleted question
-  public QuestionsEntity deleteQuestionByUuid(QuestionsEntity questionEntity){
+  public void deleteQuestionByUuid(QuestionsEntity questionEntity){
     entityManager.remove(questionEntity);
-    return questionEntity;
   }
 
   //This method executes Named query to fetch all the questions for the specified userUuid

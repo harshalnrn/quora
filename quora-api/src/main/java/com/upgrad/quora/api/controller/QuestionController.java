@@ -83,9 +83,9 @@ public class QuestionController {
     )
     public ResponseEntity<QuestionDeleteResponse> deleteQuestionByUuid(@PathVariable("questionId") final String questionUuid, @RequestHeader("authorization") final String accessToken) throws AuthorizationFailedException, InvalidQuestionException {
 
-        QuestionsEntity deletedQuestion = questionBusinessService.deleteQuestionByUuid(questionUuid, accessToken);
+        questionBusinessService.deleteQuestionByUuid(questionUuid, accessToken);
 
-        QuestionDeleteResponse response = new QuestionDeleteResponse().id(deletedQuestion.getUuid()).status("QUESTION DELETED");
+        QuestionDeleteResponse response = new QuestionDeleteResponse().id(questionUuid).status("QUESTION DELETED");
 
         return new ResponseEntity<QuestionDeleteResponse>( response , HttpStatus.OK);
     }

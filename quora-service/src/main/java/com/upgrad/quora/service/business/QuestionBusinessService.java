@@ -68,7 +68,7 @@ public class QuestionBusinessService {
   // - The user for given accessToken has signed out
   // - The user for the given accessToken is not the owner of the question to be deleted and is a non-admin user
   //throws InvalidQuestionException if the question with the given Uuid does not exist in the database
-  public QuestionsEntity deleteQuestionByUuid(String uuid, String accessToken) throws AuthorizationFailedException, InvalidQuestionException{
+  public void deleteQuestionByUuid(String uuid, String accessToken) throws AuthorizationFailedException, InvalidQuestionException{
 
     UserAuthTokenEntity userAuthTokenEntity = userDao.getAuthToken(accessToken);
     if(userAuthTokenEntity == null){
@@ -94,9 +94,7 @@ public class QuestionBusinessService {
       throw new AuthorizationFailedException("ATHR-003" , "Only the question owner or admin can delete the question");
     }
 
-    QuestionsEntity questionDeleted = questionDao.deleteQuestionByUuid(questionToDelete);
-
-    return questionDeleted;
+    questionDao.deleteQuestionByUuid(questionToDelete);
   }
 
   //Checks if the user has signed out by comparing if the current time is after the loggedOutTime received by the method
