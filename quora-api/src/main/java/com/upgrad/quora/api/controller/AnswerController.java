@@ -1,9 +1,12 @@
 package com.upgrad.quora.api.controller;
 
+import com.upgrad.quora.api.model.AnswerEditRequest;
+import com.upgrad.quora.api.model.AnswerEditResponse;
 import com.upgrad.quora.api.model.AnswerRequest;
 import com.upgrad.quora.api.model.AnswerResponse;
 import com.upgrad.quora.service.business.AnswerBusinessService;
 import com.upgrad.quora.service.entity.AnswerEntity;
+import com.upgrad.quora.service.exception.AnswerNotFoundException;
 import com.upgrad.quora.service.exception.AuthorizationFailedException;
 import com.upgrad.quora.service.exception.InvalidQuestionException;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -48,5 +51,25 @@ public class AnswerController {
         AnswerResponse answerResponse = new AnswerResponse().id(answerEntity.getUuid()).status("ANSWER CREATED");
 
         return new ResponseEntity<AnswerResponse>( answerResponse , HttpStatus.OK);
+    }
+
+    //This method will be called when the request pattern is /answer/edit/{answerId} and incoming request is of type PUT
+    //This method receives the answerUuid of the answer which should be edited, accessToken of the user performing the operation and the new answer content
+    //This method calls the business logic method to update the answer in the database
+    //On success, returns the answer UUID with message ANSWER EDITED and Http Status code 200
+    //throws AuthorizationFailedException , AnswerNotFoundException
+    @RequestMapping(
+            method = RequestMethod.PUT,
+            path = "/answer/edit/{answerId}",
+            produces = MediaType.APPLICATION_JSON_UTF8_VALUE,
+            consumes = MediaType.APPLICATION_JSON_UTF8_VALUE
+    )
+    public ResponseEntity<AnswerEditResponse> editAnswer(final AnswerEditRequest answerEditRequest, @PathVariable("answerId") final String answerUuid,
+                                                        @RequestHeader("authorization") final String accessToken) throws AuthorizationFailedException, AnswerNotFoundException{
+        answerBusinessService.updateAnswer(accessToken , answerUuid , answerEditRequest.getContent());
+
+        AnswerEditResponse editResponse = new AnswerEditResponse().id(answerUuid).status("ANSWER EDITED");
+
+        return new ResponseEntity<AnswerEditResponse>(editResponse , HttpStatus.OK);
     }
 }

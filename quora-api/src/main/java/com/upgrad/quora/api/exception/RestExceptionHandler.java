@@ -56,5 +56,10 @@ public class RestExceptionHandler {
   public ResponseEntity<ErrorResponse> resourceNotFoundException(InvalidQuestionException e,WebRequest webRequest){
       return new ResponseEntity<ErrorResponse>(new ErrorResponse().code(e.getCode()).message(e.getErrorMessage()),HttpStatus.NOT_FOUND);
   }
+
+  @ExceptionHandler(AnswerNotFoundException.class)
+  public ResponseEntity<ErrorResponse> resourceNotFoundException(AnswerNotFoundException e,WebRequest webRequest){
+    return new ResponseEntity<ErrorResponse>(new ErrorResponse().code(e.getCode()).message(e.getErrorMessage()),HttpStatus.NOT_FOUND);
+  }
 }
 
