@@ -8,18 +8,14 @@ import com.upgrad.quora.service.entity.UserEntity;
 import com.upgrad.quora.service.exception.AuthorizationFailedException;
 import com.upgrad.quora.service.exception.InvalidQuestionException;
 import com.upgrad.quora.service.exception.UserNotFoundException;
-import com.upgrad.quora.service.exception.InvalidQuestionException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.time.ZonedDateTime;
-
 import java.util.List;
 
-import java.time.ZonedDateTime;
-import java.util.List;
 
 @Service
 @Transactional(propagation = Propagation.REQUIRED)
@@ -55,9 +51,16 @@ public class QuestionBusinessService {
     questionDao.createQuestion(questionsEntity);
   }
 
-/*
-The following method performs valid Authorization checks before a user is allowed to edit the question
- */
+    /*
+      The following method performs valid Authorization checks before a user is allowed to edit the question as follows
+      1. If the Entered question UUID does not exist
+      2. If the Access Token does not exist in the Database
+      3. If the User is Signed Out and he/she is trying to edit the question
+      4. If the logged in user is the owner of the question, then only he can edit the question
+      In case of failure of the conditions stated above, the method throws AuthorizationFailedException in case of 1,2 and 3
+      and InvalidQuestionException in case of 4
+      Returns the questions Entity object back to the controller
+    */
   public QuestionsEntity editQuestionService(String quesUuid,String accessToken) throws InvalidQuestionException,AuthorizationFailedException
   {
     final QuestionsEntity questionsEntity = questionDao.getQuestionByUuid(quesUuid);
@@ -70,19 +73,20 @@ The following method performs valid Authorization checks before a user is allowe
     } else if ((userAuthTokenEntity.getLogoutAt() != null) && userAuthTokenEntity.getLogoutAt().isBefore(ZonedDateTime.now())) {
       throw new AuthorizationFailedException("ATHR-002", "User is signed out.Sign in first to post a question");
     }
-    // Checking if the User is owner of the question or not
-    else if (questionsEntity.getUserEntity().getId() != userAuthTokenEntity.getUsers().getId()) {
+    // Checking if the Logged In User is owner of the question or not
+    else if (!questionsEntity.getUserEntity().getId().equals(userAuthTokenEntity.getUsers().getId())) {
       throw new AuthorizationFailedException("ATHR-003", "Only the question owner can edit the question");
     }
     return  questionsEntity;
   }
+
   /*
-  The following persists the edited question in the Database
+  The following persists the edited question in the Database by passing the updated Question Entity to the DAO layer
    */
   public void updateQuestion(QuestionsEntity updatedQuestionsEntity) {
       questionDao.editQuestion(updatedQuestionsEntity);
     }
-  }
+
 
   public List<QuestionsEntity> getQuestionList(String accessToken)
       throws AuthorizationFailedException {
@@ -94,7 +98,6 @@ The following method performs valid Authorization checks before a user is allowe
   // - The user corresponding to the given accessToken is signed in
   // - The question for the given Uuid exists in the database
   // - The user deleting the question is either owner of the question with the given Uuid or admin user
-  //Returns QuestionsEntity of the deleted question
   //throws AuthorizationFailedException for the following conditions
   // - The given accessToken does not exist
   // - The user for given accessToken has signed out
@@ -113,11 +116,9 @@ The following method performs valid Authorization checks before a user is allowe
     }
 
     QuestionsEntity questionToDelete = questionDao.getQuestionByUuid(uuid);
-
     if(questionToDelete == null){
       throw new InvalidQuestionException("QUES-001" , "Entered question uuid does not exist");
     }
-
     UserEntity loggedInUser = userAuthTokenEntity.getUsers();
     UserEntity questionOwner = questionToDelete.getUserEntity();
 
@@ -125,7 +126,6 @@ The following method performs valid Authorization checks before a user is allowe
     if(!questionOwner.getUuid().equals(loggedInUser.getUuid()) && !("admin").equals(loggedInUser.getRole())){
       throw new AuthorizationFailedException("ATHR-003" , "Only the question owner or admin can delete the question");
     }
-
     questionDao.deleteQuestionByUuid(questionToDelete);
   }
 
@@ -150,17 +150,13 @@ The following method performs valid Authorization checks before a user is allowe
       if(userAuthTokenEntity == null){
           throw new AuthorizationFailedException("ATHR-001" , "User has not signed in");
       }
-
       if(hasUserSignedOut(userAuthTokenEntity.getLogoutAt())){
           throw new AuthorizationFailedException("ATHR-002", "User is signed out.Sign in first to get all questions posted by a specific user");
       }
-
       UserEntity user = userDao.getUserbyUuid(userUuid);
       if(user == null){
           throw new UserNotFoundException("USR-001", "User with entered uuid whose question details are to be seen does not exist");
       }
-
       return questionDao.getQuestionsForUserId(userUuid);
-
   }
 }
