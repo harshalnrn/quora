@@ -110,16 +110,25 @@ public class AnswerBusinessService {
   // received by the method
   // Returns true if the currenttime is after loggedOutTime(signout has happened), false otherwise
 
-  public List<AnswerEntity> getAllAnswersOfQuestion(String questionUuid, String token) {
+  public List<AnswerEntity> getAllAnswersOfQuestion(String questionUuid, String token)
+      throws AuthorizationFailedException, InvalidQuestionException {
 
     UserAuthTokenEntity tokenEntity = userDao.getAuthToken(token);
 
-    if (tokenEntity == null) {}
+    if (tokenEntity == null) {
+      throw new AuthorizationFailedException("ATHR-001", "User has not signed in");
+    }
 
-    if (hasUserSignedOut(tokenEntity.getLogoutAt())) {}
+    if (hasUserSignedOut(tokenEntity.getLogoutAt())) {
+      throw new AuthorizationFailedException(
+          "ATHR-002", "User is signed out.Sign in first to get the answers");
+    }
 
     QuestionsEntity questionsEntity = questionDao.getQuestionByUuid(questionUuid);
-    if (questionsEntity != null) {}
+    if (questionsEntity == null) {
+      throw new InvalidQuestionException(
+          "QUES-001", "The question with entered uuid whose details are to be seen does not exist");
+    }
 
     return answerDao.getAnswerByQUuid(questionsEntity);
   }

@@ -87,7 +87,8 @@ public class AnswerController {
       produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
   public ResponseEntity<List<AnswerDetailsResponse>> getAllAnswersOfQuestion(
       @PathVariable("questionId") String questionId,
-      @RequestHeader("authorization") String accessToken) {
+      @RequestHeader("authorization") String accessToken)
+      throws AuthorizationFailedException, InvalidQuestionException {
 
     List<AnswerEntity> ansList =
         answerBusinessService.getAllAnswersOfQuestion(questionId, accessToken);
