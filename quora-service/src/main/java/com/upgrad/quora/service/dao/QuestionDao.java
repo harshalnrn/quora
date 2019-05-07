@@ -20,9 +20,7 @@ public class QuestionDao {
   @PersistenceContext private EntityManager entityManager;
 
   public void createQuestion(QuestionsEntity questionsEntity) {
-    entityManager.persist(
-        questionsEntity); // where to handled SQL exception during this operation? Transaction block
-                          // ? ex: constraint violation
+    entityManager.persist(questionsEntity);
   }
 
   public UserAuthTokenEntity ValidateAccessToken(String accessToken) {
@@ -55,21 +53,8 @@ public class QuestionDao {
     return questionList;
   }
 
-  //This method executes Named query to fetch the question from the database with corresponding Uuid
-  //Returns the question in case the question is found in the database
-  //Returns null if no question is found in the database
-  public QuestionsEntity getQuestionByUuid(String uuid){
-    try {
-      TypedQuery<QuestionsEntity> query = entityManager.createNamedQuery("findQuestionByUuid", QuestionsEntity.class);
-      query.setParameter("uuid", uuid);
-      return query.getSingleResult();
-    } catch (NoResultException nrex) {
-      return null;
-    }
-  }
 
-  //This method receives the QuestionEntity of the question to be deleted from the database
-  //Returns the QuestionEntity of deleted question
+  //This method receives the QuestionEntity of the question to be deleted from the database and removes it
   public void deleteQuestionByUuid(QuestionsEntity questionEntity){
     entityManager.remove(questionEntity);
   }
@@ -85,5 +70,22 @@ public class QuestionDao {
       } catch (NoResultException nrex) {
           return null;
       }
+  }
+
+  public QuestionsEntity getQuestionByUuid(String quesUuid)
+  {
+    try {
+      return entityManager.createNamedQuery("QuestionByUuid", QuestionsEntity.class).setParameter("uuid",quesUuid)
+              .getSingleResult();
+    } catch (NoResultException nre) {
+      return null;
+    }
+  }
+
+  /*
+  This method
+   */
+  public void editQuestion(QuestionsEntity questionsEntity) {
+    entityManager.merge(questionsEntity);   // Changing the state of the entity from detached to persistent
   }
 }
