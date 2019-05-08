@@ -17,6 +17,8 @@ import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.time.ZonedDateTime;
+import java.util.ArrayList;
+import java.util.List;
 
 @Service
 @Transactional(propagation = Propagation.REQUIRED)
@@ -105,4 +107,23 @@ public class AnswerBusinessService {
     public boolean hasUserSignedOut(ZonedDateTime loggedOutTime){
         return ( loggedOutTime != null && ZonedDateTime.now().isAfter(loggedOutTime) );
     }
+
+    public void deleteAnswer(String answerUuid, String accessToken) throws AuthorizationFailedException, AnswerNotFoundException {
+        UserAuthTokenEntity userAuthTokenEntity = userDao.getAuthToken(accessToken);
+        if (userAuthTokenEntity==null) {
+            throw new AuthorizationFailedException("ATHR-001" , "User has not signed in");
+        }
+        if (hasUserSignedOut(userAuthTokenEntity.getLogoutAt())) {
+            throw new AuthorizationFailedException("ATHR-002" , "User is signed out.Sign in first to edit an answer");
+        }
+        AnswerEntity answerEntity  = answerDao.getAnswerByUuid(answerUuid);
+        if (answerEntity==null){
+            throw new AnswerNotFoundException("ANS-001","Entered answer uuid does not exist");
+        }
+        if (!answerEntity.getUsers().getUuid().equals(userAuthTokenEntity.getUsers().getUuid()) && !userAuthTokenEntity.getUsers().getRole().equals("admin")){
+            throw new AuthorizationFailedException("ATHR-003","Only the answer owner or admin can delete the answer");
+        }
+        answerDao.deleteAnswer(answerEntity);
+    }
+
 }

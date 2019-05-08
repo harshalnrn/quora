@@ -9,7 +9,9 @@ import java.time.ZonedDateTime;
 @Entity
 @Data
 @Table(name = "ANSWER")
-@NamedQueries(@NamedQuery(name = "findAnswerByUuid" , query = "select a from AnswerEntity a where uuid = :uuid"))
+@NamedQueries ({
+        @NamedQuery(name = "findAnswerByUuid" , query = "select a from AnswerEntity a where uuid = :uuid")
+})
 public class AnswerEntity {
     @Id
     @Column(name = "id")
@@ -32,13 +34,13 @@ public class AnswerEntity {
    // @Size()
     private ZonedDateTime date;
 
-    @ManyToOne(cascade = CascadeType.REMOVE)
+    @ManyToOne
     @JoinColumn(name = "user_id")
     @NotNull
     //@Size()
     private UserEntity users; // takes primary key of users
 
-    @ManyToOne(cascade = CascadeType.REMOVE)
+    @ManyToOne
     @JoinColumn(name = "question_id")
     @NotNull
     //@Size()

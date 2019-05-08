@@ -2,17 +2,21 @@ package com.upgrad.quora.service.dao;
 
 
 import com.upgrad.quora.service.entity.AnswerEntity;
+import com.upgrad.quora.service.entity.QuestionsEntity;
 import lombok.Data;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;
 
 import javax.persistence.EntityManager;
 import javax.persistence.NoResultException;
 import javax.persistence.PersistenceContext;
 import javax.persistence.TypedQuery;
+import java.util.List;
 
 @Data
 @Repository
 public class AnswerDao {
+
 
     @PersistenceContext
     private EntityManager entityManager;
@@ -38,4 +42,8 @@ public class AnswerDao {
     public void updateAnswer(AnswerEntity updatedAnswerEntity){
         entityManager.merge(updatedAnswerEntity);
     }
+
+    public void deleteAnswer(AnswerEntity answerEntity) { entityManager.remove(answerEntity);}
+
+
 }
