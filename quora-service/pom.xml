@@ -9,6 +9,9 @@
     </parent>
     <modelVersion>4.0.0</modelVersion>
 
+    <properties>
+        <postgresql.driver.version>42.2.2</postgresql.driver.version>
+    </properties>
     <artifactId>quora-service</artifactId>
     <dependencies>
         <dependency>
@@ -44,6 +47,11 @@
             <groupId>com.auth0</groupId>
             <artifactId>java-jwt</artifactId>
             <version>3.4.0</version>
+        </dependency>
+        <dependency>
+            <groupId>org.postgresql</groupId>
+            <artifactId>postgresql</artifactId>
+            <version>${postgresql.driver.version}</version>
         </dependency>
 
 
