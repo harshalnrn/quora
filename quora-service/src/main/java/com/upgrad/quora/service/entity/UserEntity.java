@@ -1,6 +1,8 @@
 package com.upgrad.quora.service.entity;
 
 import lombok.Data;
+import org.hibernate.annotations.OnDelete;
+import org.hibernate.annotations.OnDeleteAction;
 
 import javax.persistence.*;
 import javax.validation.constraints.NotNull;
@@ -20,6 +22,7 @@ public class UserEntity {
     @Id
     @Column(name = "id")
     @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @OnDelete(action=OnDeleteAction.CASCADE)
     // @Size()
     private Integer id;
 
@@ -79,6 +82,7 @@ public class UserEntity {
     //@Size()
     private String contactNumber;
 
+    /*
   @OneToMany
   @JoinColumn(name="user_id")
   private List<AnswerEntity> answersList;
@@ -86,4 +90,6 @@ public class UserEntity {
   @OneToMany
   @JoinColumn(name="user_id")
   private List<QuestionsEntity> questionsList;
+  */
+
 }

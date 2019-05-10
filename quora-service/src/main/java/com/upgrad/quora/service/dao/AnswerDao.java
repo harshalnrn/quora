@@ -1,5 +1,6 @@
 package com.upgrad.quora.service.dao;
 
+
 import com.upgrad.quora.service.entity.AnswerEntity;
 import com.upgrad.quora.service.entity.QuestionsEntity;
 import lombok.Data;
@@ -50,4 +51,10 @@ public class AnswerDao {
   public void updateAnswer(AnswerEntity updatedAnswerEntity) {
     entityManager.merge(updatedAnswerEntity);
   }
+
+  /*
+  This method receives the Answer entity to be deleted in the Database
+   */
+    public void deleteAnswer(AnswerEntity answerEntity) { entityManager.remove(answerEntity);}
+
 }
