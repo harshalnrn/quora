@@ -106,9 +106,41 @@ public class AnswerBusinessService {
     answerDao.updateAnswer(existingAnswer);
   }
 
-  // Checks if the user has signed out by comparing if the current time is after the loggedOutTime
-  // received by the method
-  // Returns true if the currenttime is after loggedOutTime(signout has happened), false otherwise
+  /*
+  This method calls the delete answer method in the DAO class to delete the answer in the Database. It accepts the answer UUID
+  and the access token of the Logged in user.
+  throws AuthorizationFailedException if
+  1. User has not signed in  (Access Token does not exist in the Database)
+  2. User has logged out (Logout time is updated in the Database and current time is ahead of the logged out time)
+  3. The user who posted the answer is not the same who is trying to delete the answer and also is non-admin
+
+  throws AnswerNotFoundException if
+  The answer UUID does not exist in the Database
+  Gets the answer persisted in the DB by the UUID (returns null if not present) and passes it to the DAO to delete the same
+   */
+    public void deleteAnswer(String answerUuid, String accessToken) throws AuthorizationFailedException, AnswerNotFoundException {
+        UserAuthTokenEntity userAuthTokenEntity = userDao.getAuthToken(accessToken);
+        if (userAuthTokenEntity==null) {
+            throw new AuthorizationFailedException("ATHR-001" , "User has not signed in");
+        }
+        if (hasUserSignedOut(userAuthTokenEntity.getLogoutAt())) {
+            throw new AuthorizationFailedException("ATHR-002" , "User is signed out.Sign in first to edit an answer");
+        }
+        AnswerEntity answerEntity  = answerDao.getAnswerByUuid(answerUuid);
+        if (answerEntity==null){
+            throw new AnswerNotFoundException("ANS-001","Entered answer uuid does not exist");
+        }
+        if (!answerEntity.getUsers().getUuid().equals(userAuthTokenEntity.getUsers().getUuid()) && !userAuthTokenEntity.getUsers().getRole().equals("admin")){
+            throw new AuthorizationFailedException("ATHR-003","Only the answer owner or admin can delete the answer");
+        }
+        answerDao.deleteAnswer(answerEntity);
+    }
+
+    //Checks if the user has signed out by comparing if the current time is after the loggedOutTime received by the method
+    //Returns true if the current time is after loggedOutTime(signout has happened), false otherwise
+    public boolean hasUserSignedOut(ZonedDateTime loggedOutTime){
+        return ( loggedOutTime != null && ZonedDateTime.now().isAfter(loggedOutTime) );
+    }
 
   public List<AnswerEntity> getAllAnswersOfQuestion(String questionUuid, String token)
       throws AuthorizationFailedException, InvalidQuestionException {
@@ -129,11 +161,6 @@ public class AnswerBusinessService {
       throw new InvalidQuestionException(
           "QUES-001", "The question with entered uuid whose details are to be seen does not exist");
     }
-
     return answerDao.getAnswerByQUuid(questionsEntity);
-  }
-
-  public boolean hasUserSignedOut(ZonedDateTime loggedOutTime) {
-    return (loggedOutTime != null && ZonedDateTime.now().isAfter(loggedOutTime));
   }
 }

@@ -37,15 +37,15 @@ public class AnswerEntity {
   // @Size()
   private ZonedDateTime date;
 
-  @ManyToOne(cascade = CascadeType.REMOVE)
-  @JoinColumn(name = "user_id")
-  @NotNull
-  // @Size()
-  private UserEntity users; // takes primary key of users
+    @ManyToOne
+    @JoinColumn(name = "user_id")
+    @NotNull
+    //@Size()
+    private UserEntity users; // takes primary key of users
 
-  @ManyToOne(cascade = CascadeType.REMOVE)
-  @JoinColumn(name = "question_id")
-  @NotNull
-  // @Size()
-  private QuestionsEntity questionsEntity;
+    @ManyToOne
+    @JoinColumn(name = "question_id")
+    @NotNull
+    //@Size()
+    private QuestionsEntity questionsEntity;
 }
