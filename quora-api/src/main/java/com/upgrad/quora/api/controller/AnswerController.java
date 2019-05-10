@@ -78,6 +78,27 @@ public class AnswerController {
 
     return new ResponseEntity<AnswerEditResponse>(editResponse, HttpStatus.OK);
   }
+    /*
+    This method will be called when the request pattern is /answer/delete/{answerId}
+    This method receives the answer Id of the answer which is to be deleted and the access Token of the logged in user
+    It accepts an incoming HTTP Verb type DELETE and produces a JSON response on successfully deleting the answer in a
+    Response Entity<T> type class provided by Java Spring framework along with HTTP Status Code 200 containing the answer UUID
+    and the status as "ANSWER DELETED". Further, this method calls the Business logic in the Service layer to delete the answer
+    in the Database & throws AuthorizationFailedException and AnswerNotFoundException as exception cases
+     */
+    @RequestMapping(
+            method = RequestMethod.DELETE,
+            path = "/answer/delete/{answerId}",
+            produces = MediaType.APPLICATION_JSON_UTF8_VALUE
+    )
+    public ResponseEntity<AnswerDeleteResponse> deleteAnswer( @PathVariable("answerId") final String answerUuid,
+                                                              @RequestHeader("authorization") final String accessToken)
+            throws AuthorizationFailedException, AnswerNotFoundException {
+        answerBusinessService.deleteAnswer(answerUuid,accessToken);
+        AnswerDeleteResponse answerDeleteResponse = new AnswerDeleteResponse().id(answerUuid).status("ANSWER DELETED");
+        return new ResponseEntity<AnswerDeleteResponse>(answerDeleteResponse,HttpStatus.OK);
+    }
+
 
   @RequestMapping(
       method = RequestMethod.GET,
@@ -101,4 +122,6 @@ public class AnswerController {
     }
     return new ResponseEntity<List<AnswerDetailsResponse>>(list, HttpStatus.OK);
   }
+
+
 }
