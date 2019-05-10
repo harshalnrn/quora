@@ -1,4 +1,4 @@
-/*package com.upgrad.quora.api.controller;
+package com.upgrad.quora.api.controller;
 
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -32,7 +32,7 @@ public class UserControllerTest {
     //This test case passes when you signup with an email that already exists in the database.
     @Test
     public void signupWithRepeatedEmail() throws Exception {
-        mvc.perform(MockMvcRequestBuilders.post("/user/signup?firstName=a&lastName=a&userName=non_existing_username&emailAddress=database_email&password=a&country=a&aboutMe=a&dob=a&contactNumber=a").contentType(MediaType.APPLICATION_JSON_UTF8))
+        mvc.perform(MockMvcRequestBuilders.post("/user/signup?firstName=a&lastName=a&userName=new_username&emailAddress=a&password=a&country=a&aboutMe=a&dob=a&contactNumber=a").contentType(MediaType.APPLICATION_JSON_UTF8))
                 .andExpect(status().isConflict())
                 .andExpect(MockMvcResultMatchers.jsonPath("code").value("SGR-002"));
     }
@@ -46,4 +46,3 @@ public class UserControllerTest {
                 .andExpect(MockMvcResultMatchers.jsonPath("code").value("SGR-001"));
     }
 }
-*/

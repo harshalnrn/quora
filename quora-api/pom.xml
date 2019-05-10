@@ -36,7 +36,6 @@
             <version>2.6.1</version>
             <scope>compile</scope>
         </dependency>
-        <!--below is the module dependency. check how does root pom know where to pick from-->
         <dependency>
             <groupId>com.upgrad.quora</groupId>
             <artifactId>quora-service</artifactId>
@@ -47,6 +46,12 @@
         <dependency>
             <groupId>org.springframework.boot</groupId>
             <artifactId>spring-boot-starter-test</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>org.projectlombok</groupId>
+            <artifactId>lombok</artifactId>
+            <version>1.18.6</version>
+            <scope>provided</scope>
         </dependency>
     </dependencies>
 
