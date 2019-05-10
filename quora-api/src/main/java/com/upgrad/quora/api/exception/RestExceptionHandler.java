@@ -17,7 +17,7 @@ public class RestExceptionHandler {
       SignOutRestrictedException exe, WebRequest request) {
     return new ResponseEntity<ErrorResponse>(
         new ErrorResponse().code(exe.getCode()).message(exe.getErrorMessage()),
-        HttpStatus.NOT_FOUND);
+        HttpStatus.UNAUTHORIZED);
   }
 
   @ExceptionHandler(SignUpRestrictedException.class)

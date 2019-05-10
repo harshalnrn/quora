@@ -88,7 +88,7 @@ public class UserController {
 
     @RequestMapping(method = RequestMethod.POST, path = "/signout", produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
     public ResponseEntity<SignoutResponse> userSignOut(
-            @RequestHeader("AccessToken") String authorisationHeader)     // Requesting the Access Token in the Request Header
+            @RequestHeader("authorization") String authorisationHeader)     // Requesting the Access Token in the Request Header
             throws SignOutRestrictedException {
 
         UserAuthTokenEntity userAuthTokenEntity = userBusinessService.signOut(authorisationHeader);
