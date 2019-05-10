@@ -4,7 +4,6 @@ import com.upgrad.quora.service.dao.UserDao;
 import com.upgrad.quora.service.entity.UserAuthTokenEntity;
 import com.upgrad.quora.service.entity.UserEntity;
 import com.upgrad.quora.service.exception.*;
-
 import lombok.Data;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -96,35 +95,35 @@ public class UserBusinessService {
     }
 
 
-  public void deleteUserByUuid(final String userUuid, final String authorization) throws AuthorizationFailedException, UserNotFoundException {
+  /*
+ This method is used to delete the details of a signed in and Authorized user by an Admin user
+  */
+  public UserEntity deleteUserByUuid(final String userUuid, final String authorization) throws AuthorizationFailedException, UserNotFoundException {
 
     UserAuthTokenEntity userAuthTokenEntity = userDao.getAuthToken(authorization);
-
     if(userAuthTokenEntity == null){
       throw new AuthorizationFailedException("ATHR-001","User has not signed in");
     }
 
     //Check user signed out condition
-    ZonedDateTime loggedOutTime = userAuthTokenEntity.getLogoutAt();
-    ZonedDateTime now = ZonedDateTime.now();
+    final ZonedDateTime loggedOutTime = userAuthTokenEntity.getLogoutAt();
+    final ZonedDateTime now = ZonedDateTime.now();
     if(loggedOutTime != null && now.isAfter(loggedOutTime)){
       throw new AuthorizationFailedException("ATHR-002","User is signed out");
     }
-
     UserEntity user = userAuthTokenEntity.getUsers();
-
     if(("nonadmin").equals(user.getRole())){
       throw new AuthorizationFailedException("ATHR-003","Unauthorized Access, Entered user is not an admin");
     }
 
     //Check if the user exists for the given uuid
-    UserEntity userToDelete = userDao.findUserByUuid(userUuid);
+    UserEntity userToDelete = userDao.getUserbyUuid(userUuid);
 
     if(userToDelete == null){
       throw new UserNotFoundException("USR-001","User with entered uuid to be deleted does not exist");
     }
 
-    userDao.deleteUser(userToDelete);
+    return userDao.deleteUser(userToDelete);
   }
 
     /*
@@ -138,10 +137,9 @@ public class UserBusinessService {
       } else if (userEntity==null) {    // If user UUID does not exist in the Database
         throw new UserNotFoundException("USR-001","User with entered uuid does not exist");
         // Checking if user has signed out
-      } else if (!userAuthToken.getLogoutAt().equals(userAuthToken.getExpiresAt())) {
+      } else if (userAuthToken.getLogoutAt()!=null && userAuthToken.getLogoutAt().isBefore(ZonedDateTime.now())) {
         throw new AuthorizationFailedException("ATHR-002", "User is signed out.Sign in first to get user details");
       } else
         return userEntity;
     }
-
 }

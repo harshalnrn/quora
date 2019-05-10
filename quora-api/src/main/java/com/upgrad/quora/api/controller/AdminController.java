@@ -23,12 +23,12 @@ public class AdminController {
             path = "/user/{userId}",
             produces = MediaType.APPLICATION_JSON_UTF8_VALUE
     )
-    public ResponseEntity<UserDeleteResponse> deleteUserByUuid(@PathVariable("userId") final String userUuid, @RequestHeader("authorization") final String authorization) throws AuthorizationFailedException, UserNotFoundException{
+    public ResponseEntity<UserDeleteResponse> deleteUserByUuid(@PathVariable("userId") final String userUuid,
+                                                               @RequestHeader("authorization") final String authorization)
+                                                                throws AuthorizationFailedException, UserNotFoundException  {
 
-        userBusinessService.deleteUserByUuid(userUuid, authorization);
-
-        UserDeleteResponse userDeleteResponse = new UserDeleteResponse().id(userUuid).status("USER SUCCESSFULLY DELETED");
-
+        UserEntity deltedUser = userBusinessService.deleteUserByUuid(userUuid, authorization);
+        UserDeleteResponse userDeleteResponse = new UserDeleteResponse().id(deltedUser.getUuid()).status("USER SUCCESSFULLY DELETED");
         return new ResponseEntity<UserDeleteResponse>(userDeleteResponse , HttpStatus.OK);
     }
 }

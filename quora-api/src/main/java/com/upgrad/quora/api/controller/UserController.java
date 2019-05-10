@@ -29,71 +29,72 @@ import java.util.UUID;
 @RequestMapping("/user") // confusion with root context for rest calls (i.e default, custom)
 public class UserController {
 
-  @Autowired private UserBusinessService userBusinessService;
+    @Autowired
+    private UserBusinessService userBusinessService;
 
-  @RequestMapping(
-      method = RequestMethod.POST,
-      path = "/signup",
-      consumes = MediaType.APPLICATION_JSON_UTF8_VALUE,
-      produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
-  public ResponseEntity<SignupUserResponse> userSignUp(final SignupUserRequest signupUserRequest) throws SignUpRestrictedException {
+    @RequestMapping(
+            method = RequestMethod.POST,
+            path = "/signup",
+            consumes = MediaType.APPLICATION_JSON_UTF8_VALUE,
+            produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
+    public ResponseEntity<SignupUserResponse> userSignUp(final SignupUserRequest signupUserRequest) throws SignUpRestrictedException {
 
-    UserEntity userEntity = new UserEntity();
-    userEntity.setUuid(UUID.randomUUID().toString());
-    userEntity.setFirstName(signupUserRequest.getFirstName());
-    userEntity.setLastName(signupUserRequest.getLastName());
-    userEntity.setUsername(signupUserRequest.getUserName());
-    userEntity.setEmail(signupUserRequest.getEmailAddress());
-    userEntity.setPassword(signupUserRequest.getPassword());
-    userEntity.setCountry(signupUserRequest.getCountry());
-    userEntity.setAboutme(signupUserRequest.getAboutMe());
-    userEntity.setDob(signupUserRequest.getDob());
-    userEntity.setCountry(signupUserRequest.getCountry());
-    userEntity.setContactNumber(signupUserRequest.getContactNumber());
-    userEntity.setRole("nonadmin");
+        UserEntity userEntity = new UserEntity();
+        userEntity.setUuid(UUID.randomUUID().toString());
+        userEntity.setFirstName(signupUserRequest.getFirstName());
+        userEntity.setLastName(signupUserRequest.getLastName());
+        userEntity.setUsername(signupUserRequest.getUserName());
+        userEntity.setEmail(signupUserRequest.getEmailAddress());
+        userEntity.setPassword(signupUserRequest.getPassword());
+        userEntity.setCountry(signupUserRequest.getCountry());
+        userEntity.setAboutme(signupUserRequest.getAboutMe());
+        userEntity.setDob(signupUserRequest.getDob());
+        userEntity.setCountry(signupUserRequest.getCountry());
+        userEntity.setContactNumber(signupUserRequest.getContactNumber());
+        userEntity.setRole("nonadmin");
 
-    UserEntity createdUserEntity = userBusinessService.signUp(userEntity);
+        UserEntity createdUserEntity = userBusinessService.signUp(userEntity);
 
-    SignupUserResponse userResponse =
-        new SignupUserResponse()
-            .id(createdUserEntity.getUuid())
-            .status("USER SUCCESSFULLY REGISTERED");
+        SignupUserResponse userResponse =
+                new SignupUserResponse()
+                        .id(createdUserEntity.getUuid())
+                        .status("USER SUCCESSFULLY REGISTERED");
 
-    return new ResponseEntity<SignupUserResponse>(userResponse, HttpStatus.CREATED);
-  }
+        return new ResponseEntity<SignupUserResponse>(userResponse, HttpStatus.CREATED);
+    }
 
-  @RequestMapping( // spring default exception handling for internal error
-      method = RequestMethod.POST,
-      value = "/signin",
-      produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
-  public ResponseEntity<SigninResponse> userLogin(
-      @RequestHeader("authorisationHeader") String authorisationHeader)
-      throws AuthenticationFailedException {
-    // decoding header
-    SigninResponse signinResponse = new SigninResponse();
-    byte[] decode = Base64.getDecoder().decode(authorisationHeader.split("Basic ")[1]);
-    String decodedText = new String(decode); // convert byte[] to string
-    String[] credentials = decodedText.split(":");
-    UserAuthTokenEntity userAuthTokenEntity =
-        userBusinessService.userLogin(credentials[0], credentials[1]);
-    signinResponse.setId(userAuthTokenEntity.getUsers().getUuid());
-    signinResponse.setMessage("SIGNED IN SUCCESSFULLY");
-    HttpHeaders httpHeaders = new HttpHeaders();
-    httpHeaders.set("accessToken", userAuthTokenEntity.getAccess_token());
+    @RequestMapping( // spring default exception handling for internal error
+            method = RequestMethod.POST,
+            value = "/signin",
+            produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
+    public ResponseEntity<SigninResponse> userLogin(
+            @RequestHeader("authorisationHeader") String authorisationHeader)
+            throws AuthenticationFailedException {
+        // decoding header
+        SigninResponse signinResponse = new SigninResponse();
+        byte[] decode = Base64.getDecoder().decode(authorisationHeader.split("Basic ")[1]);
+        String decodedText = new String(decode); // convert byte[] to string
+        String[] credentials = decodedText.split(":");
+        UserAuthTokenEntity userAuthTokenEntity =
+                userBusinessService.userLogin(credentials[0], credentials[1]);
+        signinResponse.setId(userAuthTokenEntity.getUsers().getUuid());
+        signinResponse.setMessage("SIGNED IN SUCCESSFULLY");
+        HttpHeaders httpHeaders = new HttpHeaders();
+        httpHeaders.set("accessToken", userAuthTokenEntity.getAccess_token());
 
-    return new ResponseEntity<SigninResponse>(signinResponse, httpHeaders, HttpStatus.OK);
-  } // why final required with parameter
+        return new ResponseEntity<SigninResponse>(signinResponse, httpHeaders, HttpStatus.OK);
+    } // why final required with parameter
 
 
-   @RequestMapping(method = RequestMethod.POST,path = "/signout", produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
+    @RequestMapping(method = RequestMethod.POST, path = "/signout", produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
     public ResponseEntity<SignoutResponse> userSignOut(
-          @RequestHeader("AccessToken") String authorisationHeader)     // Requesting the Access Token in the Request Header
-          throws SignOutRestrictedException {
+            @RequestHeader("AccessToken") String authorisationHeader)     // Requesting the Access Token in the Request Header
+            throws SignOutRestrictedException {
 
-    UserAuthTokenEntity userAuthTokenEntity = userBusinessService.signOut(authorisationHeader);
-    SignoutResponse signoutResponse = new SignoutResponse();
-    signoutResponse.setId(userAuthTokenEntity.getUsers().getUuid());
-    signoutResponse.setMessage("SIGNED OUT SUCCESSFULLY");
-    return new ResponseEntity<SignoutResponse>(signoutResponse,HttpStatus.OK);
-  }
+        UserAuthTokenEntity userAuthTokenEntity = userBusinessService.signOut(authorisationHeader);
+        SignoutResponse signoutResponse = new SignoutResponse();
+        signoutResponse.setId(userAuthTokenEntity.getUsers().getUuid());
+        signoutResponse.setMessage("SIGNED OUT SUCCESSFULLY");
+        return new ResponseEntity<SignoutResponse>(signoutResponse, HttpStatus.OK);
+    }
 }
