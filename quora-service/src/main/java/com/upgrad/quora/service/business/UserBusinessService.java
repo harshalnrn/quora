@@ -11,6 +11,7 @@ import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.time.ZonedDateTime;
+import java.util.UUID;
 
 @Service
 @Data
@@ -67,7 +68,7 @@ public class UserBusinessService {
         userAuthTokenEntity.setLoginAt(issuedTime);
         //userAuthTokenEntity.setLogoutAt(expiryTime); shall be set after sign out
         userAuthTokenEntity.setExpiresAt(expiryTime); // why 2 columns
-        userAuthTokenEntity.setUuid("login end url");
+        userAuthTokenEntity.setUuid(UUID.randomUUID().toString());
         userDao.createAuthToken(userAuthTokenEntity);   // UserAuthtoken should be persisted in the DB for future reference
         return userAuthTokenEntity;
       } else {
