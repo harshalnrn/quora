@@ -35,7 +35,7 @@ public class QuestionBusinessService {
     // token (i.e loged in atleast once).Well there is no way, that a user can get any other access
     // token, since they get it only when they login
 
-    UserAuthTokenEntity userAuthTokenEntity = questionDao.ValidateAccessToken(accessToken);
+    UserAuthTokenEntity userAuthTokenEntity = userDao.getAuthToken(accessToken);
     if (userAuthTokenEntity == null) {
       throw new AuthorizationFailedException("ATHR-001", "User has not signed in");
     }
@@ -59,12 +59,12 @@ public class QuestionBusinessService {
       4. If the logged in user is the owner of the question, then only he can edit the question
       In case of failure of the conditions stated above, the method throws AuthorizationFailedException in case of 1,2 and 3
       and InvalidQuestionException in case of 4
-      Returns the questions Entity object back to the controller
+      Returns the questions Entity object back to the controller method
     */
   public QuestionsEntity editQuestionService(String quesUuid,String accessToken) throws InvalidQuestionException,AuthorizationFailedException
   {
     final QuestionsEntity questionsEntity = questionDao.getQuestionByUuid(quesUuid);
-    final UserAuthTokenEntity userAuthTokenEntity = questionDao.ValidateAccessToken(accessToken);
+    final UserAuthTokenEntity userAuthTokenEntity = userDao.getAuthToken(accessToken);
     if (questionsEntity==null) {
       throw new InvalidQuestionException("QUES-001","Entered question uuid does not exist");
     }
