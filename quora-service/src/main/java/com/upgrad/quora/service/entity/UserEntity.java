@@ -15,14 +15,13 @@ import java.util.List;
 @NamedQueries({
         @NamedQuery(name="findByUsername", query = "select u from UserEntity u where u.username=:userByUserName"),
         @NamedQuery(name="findByEmail",query="select u from UserEntity u where u.email=:userByEmail"),
-        @NamedQuery(name="findByUuid",query="select u from UserEntity u where u.uuid=:uuid"),
         @NamedQuery(name = "userByUuid", query = "select u from UserEntity u where u.uuid = :uuid")
 })
 public class UserEntity {
     @Id
     @Column(name = "id")
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @OnDelete(action=OnDeleteAction.CASCADE)
+
     // @Size()
     private Integer id;
 
@@ -82,14 +81,15 @@ public class UserEntity {
     //@Size()
     private String contactNumber;
 
-    /*
-  @OneToMany
-  @JoinColumn(name="user_id")
-  private List<AnswerEntity> answersList;
+    @OneToMany(mappedBy = "users",fetch = FetchType.LAZY)
+    @OnDelete(action=OnDeleteAction.CASCADE)
+    // @JoinColumn(name="user_id")
+    private List<AnswerEntity> answersList;
 
-  @OneToMany
-  @JoinColumn(name="user_id")
-  private List<QuestionsEntity> questionsList;
-  */
+    @OneToMany(mappedBy = "userEntity",fetch = FetchType.LAZY)
+    @OnDelete(action=OnDeleteAction.CASCADE)
+    // @JoinColumn(name="user_id")
+    private List<QuestionsEntity> questionsList;
+
 
 }

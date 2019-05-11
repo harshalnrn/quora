@@ -23,7 +23,7 @@ public class QuestionsEntity {
     @Id
     @Column(name = "id")
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @OnDelete(action=OnDeleteAction.CASCADE)
+
     //@Size()
     private Integer id;
 
@@ -48,9 +48,10 @@ public class QuestionsEntity {
     //@Size()
     private UserEntity userEntity;
 
-   /* @OneToMany
-    @JoinColumn(name = "user_id")
+   @OneToMany(mappedBy = "questionsEntity",fetch = FetchType.LAZY)
+   @OnDelete(action=OnDeleteAction.CASCADE)
+   // @JoinColumn(name = "user_id")
    //@Size()
     private List<AnswerEntity> answersOfQuestion;
-    */
+
 }
