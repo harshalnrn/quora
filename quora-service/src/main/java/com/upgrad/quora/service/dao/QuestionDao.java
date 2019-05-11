@@ -3,7 +3,7 @@ package com.upgrad.quora.service.dao;
 import com.upgrad.quora.service.entity.QuestionsEntity;
 import com.upgrad.quora.service.entity.UserAuthTokenEntity;
 import com.upgrad.quora.service.exception.AuthorizationFailedException;
-import lombok.Data;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;
 
 import javax.persistence.EntityManager;
@@ -13,9 +13,12 @@ import javax.persistence.TypedQuery;
 import java.time.ZonedDateTime;
 import java.util.List;
 
-@Data
+
 @Repository
 public class QuestionDao {
+
+  @Autowired
+  private UserDao userDao;
 
   @PersistenceContext private EntityManager entityManager;
 
@@ -23,21 +26,9 @@ public class QuestionDao {
     entityManager.persist(questionsEntity);
   }
 
-  public UserAuthTokenEntity ValidateAccessToken(String accessToken) {
-
-    try {
-      TypedQuery<UserAuthTokenEntity> query =
-          entityManager.createNamedQuery("userAuthTokenByAccessToken", UserAuthTokenEntity.class);
-      query.setParameter("access_token", accessToken);
-      return query.getSingleResult();
-    } catch (NoResultException e) {
-      return null;
-    }
-  }
-
   public List<QuestionsEntity> getAllQuestions(String accessToken)
       throws AuthorizationFailedException {
-    UserAuthTokenEntity tokenEntity = ValidateAccessToken(accessToken);
+    UserAuthTokenEntity tokenEntity = userDao.getAuthToken(accessToken);
     List<QuestionsEntity> questionList = null;
     if (tokenEntity == null) {
       throw new AuthorizationFailedException("ATHR-001", "User has not signed in");

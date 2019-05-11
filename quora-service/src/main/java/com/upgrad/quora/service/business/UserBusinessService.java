@@ -4,16 +4,15 @@ import com.upgrad.quora.service.dao.UserDao;
 import com.upgrad.quora.service.entity.UserAuthTokenEntity;
 import com.upgrad.quora.service.entity.UserEntity;
 import com.upgrad.quora.service.exception.*;
-import lombok.Data;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.time.ZonedDateTime;
+import java.util.UUID;
 
 @Service
-@Data
 @Transactional(propagation = Propagation.REQUIRED)
 public class UserBusinessService {
 
@@ -67,7 +66,7 @@ public class UserBusinessService {
         userAuthTokenEntity.setLoginAt(issuedTime);
         //userAuthTokenEntity.setLogoutAt(expiryTime); shall be set after sign out
         userAuthTokenEntity.setExpiresAt(expiryTime); // why 2 columns
-        userAuthTokenEntity.setUuid("login end url");
+        userAuthTokenEntity.setUuid(UUID.randomUUID().toString());
         userDao.createAuthToken(userAuthTokenEntity);   // UserAuthtoken should be persisted in the DB for future reference
         return userAuthTokenEntity;
       } else {

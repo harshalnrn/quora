@@ -1,6 +1,5 @@
 package com.upgrad.quora.service.entity;
 
-import lombok.Data;
 import org.hibernate.annotations.OnDelete;
 import org.hibernate.annotations.OnDeleteAction;
 
@@ -10,7 +9,6 @@ import java.time.ZonedDateTime;
 import java.util.List;
 
 @Entity
-@Data
 @Table(name = "QUESTION")
 @NamedQueries({
         @NamedQuery(name="allQuestions",query ="select q from QuestionsEntity q"),
@@ -50,8 +48,48 @@ public class QuestionsEntity {
 
    @OneToMany(mappedBy = "questionsEntity",fetch = FetchType.LAZY)
    @OnDelete(action=OnDeleteAction.CASCADE)
-   // @JoinColumn(name = "user_id")
    //@Size()
     private List<AnswerEntity> answersOfQuestion;
+
+
+    public Integer getId() {
+        return id;
+    }
+
+    public void setId(Integer id) {
+        this.id = id;
+    }
+
+    public String getUuid() {
+        return uuid;
+    }
+
+    public void setUuid(String uuid) {
+        this.uuid = uuid;
+    }
+
+    public String getContent() {
+        return content;
+    }
+
+    public void setContent(String content) {
+        this.content = content;
+    }
+
+    public ZonedDateTime getDate() {
+        return date;
+    }
+
+    public void setDate(ZonedDateTime date) {
+        this.date = date;
+    }
+
+    public UserEntity getUserEntity() {
+        return userEntity;
+    }
+
+    public void setUserEntity(UserEntity userEntity) {
+        this.userEntity = userEntity;
+    }
 
 }
