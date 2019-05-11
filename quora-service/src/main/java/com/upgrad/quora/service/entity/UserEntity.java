@@ -1,30 +1,28 @@
 package com.upgrad.quora.service.entity;
 
 import lombok.Data;
+import org.hibernate.annotations.OnDelete;
+import org.hibernate.annotations.OnDeleteAction;
+
 import javax.persistence.*;
 import javax.validation.constraints.NotNull;
+import javax.validation.constraints.Size;
 import java.util.List;
 
 @Entity
 @Data
 @Table(name = "USERS",uniqueConstraints = @UniqueConstraint(columnNames = "email")) //public schema
 @NamedQueries({
-<<<<<<< HEAD
-@NamedQuery(name="findByUsername", query = "select u from UserEntity u where u.username=:userByUserName"),
-@NamedQuery(name="findByEmail",query="select u from UserEntity u where u.email=:userByEmail"),
-@NamedQuery(name = "userByUuid", query = "select u from UserEntity u where u.uuid = :uuid")})
-
-=======
         @NamedQuery(name="findByUsername", query = "select u from UserEntity u where u.username=:userByUserName"),
         @NamedQuery(name="findByEmail",query="select u from UserEntity u where u.email=:userByEmail"),
         @NamedQuery(name="findByUuid",query="select u from UserEntity u where u.uuid=:uuid"),
         @NamedQuery(name = "userByUuid", query = "select u from UserEntity u where u.uuid = :uuid")
 })
->>>>>>> QuestionManagementRestService
 public class UserEntity {
     @Id
     @Column(name = "id")
     @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @OnDelete(action=OnDeleteAction.CASCADE)
     // @Size()
     private Integer id;
 
@@ -84,6 +82,7 @@ public class UserEntity {
     //@Size()
     private String contactNumber;
 
+    /*
   @OneToMany
   @JoinColumn(name="user_id")
   private List<AnswerEntity> answersList;
@@ -91,4 +90,6 @@ public class UserEntity {
   @OneToMany
   @JoinColumn(name="user_id")
   private List<QuestionsEntity> questionsList;
+  */
+
 }
