@@ -23,7 +23,7 @@ import java.util.LinkedList;
 import java.util.UUID;
 
 @RestController
-@RequestMapping("/")
+@RequestMapping("/question")
 public class QuestionController {
 
     @Autowired
@@ -35,7 +35,7 @@ public class QuestionController {
             consumes = MediaType.APPLICATION_JSON_UTF8_VALUE,
             produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
     public ResponseEntity<QuestionResponse> createQuestion(
-            QuestionRequest questionRequest, @RequestHeader("authorisationHeader") String accessToken)
+            QuestionRequest questionRequest, @RequestHeader("authorization") String accessToken)
             throws AuthorizationFailedException {
         QuestionsEntity questionsEntity = new QuestionsEntity();
         questionsEntity.setContent(questionRequest.getContent());
@@ -57,7 +57,7 @@ public class QuestionController {
             value = "/all",
             produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
     public ResponseEntity<List<QuestionDetailsResponse>> getAllQuestions(
-            @RequestHeader("authorisationHeader") String accessToken)
+            @RequestHeader("authorization") String accessToken)
             throws AuthorizationFailedException {
         QuestionDetailsResponse response = new QuestionDetailsResponse();
         List<QuestionDetailsResponse> list = new LinkedList<QuestionDetailsResponse>();
@@ -78,7 +78,7 @@ public class QuestionController {
 
     @RequestMapping(
             method = RequestMethod.PUT,
-            value = "/question/edit/{questionId}",
+            value = "/edit/{questionId}",
             consumes = MediaType.APPLICATION_JSON_UTF8_VALUE,
             produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
     public ResponseEntity<QuestionEditResponse> editQuestion
