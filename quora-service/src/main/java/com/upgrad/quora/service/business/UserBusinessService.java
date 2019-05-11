@@ -4,7 +4,6 @@ import com.upgrad.quora.service.dao.UserDao;
 import com.upgrad.quora.service.entity.UserAuthTokenEntity;
 import com.upgrad.quora.service.entity.UserEntity;
 import com.upgrad.quora.service.exception.*;
-import lombok.Data;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Propagation;
@@ -14,7 +13,6 @@ import java.time.ZonedDateTime;
 import java.util.UUID;
 
 @Service
-@Data
 @Transactional(propagation = Propagation.REQUIRED)
 public class UserBusinessService {
 

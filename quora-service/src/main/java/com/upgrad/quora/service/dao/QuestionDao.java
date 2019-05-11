@@ -3,7 +3,6 @@ package com.upgrad.quora.service.dao;
 import com.upgrad.quora.service.entity.QuestionsEntity;
 import com.upgrad.quora.service.entity.UserAuthTokenEntity;
 import com.upgrad.quora.service.exception.AuthorizationFailedException;
-import lombok.Data;
 import org.springframework.stereotype.Repository;
 
 import javax.persistence.EntityManager;
@@ -13,7 +12,7 @@ import javax.persistence.TypedQuery;
 import java.time.ZonedDateTime;
 import java.util.List;
 
-@Data
+
 @Repository
 public class QuestionDao {
 
