@@ -33,13 +33,13 @@ public class AnswerEntity {
   // @Size()
   private ZonedDateTime date;
 
-    @ManyToOne
+    @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "user_id")
     @NotNull
     //@Size()
     private UserEntity users; // takes primary key of users
 
-    @ManyToOne
+    @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "question_id")
     @NotNull
     //@Size()

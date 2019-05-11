@@ -66,7 +66,7 @@ public class UserController {
             value = "/signin",
             produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
     public ResponseEntity<SigninResponse> userLogin(
-            @RequestHeader("authorisationHeader") String authorisationHeader)
+            @RequestHeader("authorization") String authorisationHeader)
             throws AuthenticationFailedException {
         // decoding header
         SigninResponse signinResponse = new SigninResponse();

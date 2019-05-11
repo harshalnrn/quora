@@ -23,7 +23,7 @@ public class CommonController {
                     path="/userprofile/{userId}",
                     produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
     public ResponseEntity<UserDetailsResponse> getUser(@PathVariable("userId") final String userUuid,
-                                                       @RequestHeader("AccessToken") final String authorization)
+                                                       @RequestHeader("authorization") final String authorization)
                                                         throws AuthorizationFailedException, UserNotFoundException {
        final UserEntity userEntity = userBusinessService.getUserDetails(userUuid,authorization);
        UserDetailsResponse userDetailsResponse = new UserDetailsResponse().firstName(userEntity.getFirstName())
