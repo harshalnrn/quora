@@ -13,43 +13,28 @@ import org.springframework.web.context.request.WebRequest;
 public class RestExceptionHandler {
 
   @ExceptionHandler(SignOutRestrictedException.class)
-  public ResponseEntity<ErrorResponse> resourceNotFoundException(
-      SignOutRestrictedException exe, WebRequest request) {
-    return new ResponseEntity<ErrorResponse>(
-        new ErrorResponse().code(exe.getCode()).message(exe.getErrorMessage()),
-        HttpStatus.UNAUTHORIZED);
+  public ResponseEntity<ErrorResponse> singOutRestrictedException(SignOutRestrictedException exe, WebRequest request) {
+    return new ResponseEntity<ErrorResponse>(new ErrorResponse().code(exe.getCode()).message(exe.getErrorMessage()) , HttpStatus.UNAUTHORIZED);
   }
 
   @ExceptionHandler(SignUpRestrictedException.class)
-  public ResponseEntity<ErrorResponse> resourceAlreadyExistsException(
-      SignUpRestrictedException exc, WebRequest webRequest) {
-    return new ResponseEntity<ErrorResponse>(
-        new ErrorResponse().code(exc.getCode()).message(exc.getErrorMessage()),
-        HttpStatus.CONFLICT);
+  public ResponseEntity<ErrorResponse> resourceAlreadyExistsException(SignUpRestrictedException exc, WebRequest webRequest) {
+    return new ResponseEntity<ErrorResponse>(new ErrorResponse().code(exc.getCode()).message(exc.getErrorMessage()), HttpStatus.CONFLICT);
   }
 
   @ExceptionHandler(AuthenticationFailedException.class)
-  public ResponseEntity<ErrorResponse> resourceNotFoundException(
-      AuthenticationFailedException exc, WebRequest webRequest) {
-    return new ResponseEntity<ErrorResponse>(
-        new ErrorResponse().code(exc.getCode()).message(exc.getErrorMessage()),
-        HttpStatus.UNAUTHORIZED);
+  public ResponseEntity<ErrorResponse> authenticationFailedException(AuthenticationFailedException exc, WebRequest webRequest) {
+    return new ResponseEntity<ErrorResponse>(new ErrorResponse().code(exc.getCode()).message(exc.getErrorMessage()), HttpStatus.UNAUTHORIZED);
   }
 
   @ExceptionHandler(AuthorizationFailedException.class)
-  public ResponseEntity<ErrorResponse> resourceUnauthorizedException(
-      AuthorizationFailedException exe, WebRequest webRequest) {
-    return new ResponseEntity<ErrorResponse>(
-        new ErrorResponse().code(exe.getCode()).message(exe.getErrorMessage()),
-        HttpStatus.FORBIDDEN);
+  public ResponseEntity<ErrorResponse> unauthorizedException(AuthorizationFailedException exe, WebRequest webRequest) {
+    return new ResponseEntity<ErrorResponse>(new ErrorResponse().code(exe.getCode()).message(exe.getErrorMessage()), HttpStatus.FORBIDDEN);
   }
 
   @ExceptionHandler(UserNotFoundException.class)
-  public ResponseEntity<ErrorResponse> resourceNotFoundException(
-      UserNotFoundException exe, WebRequest webRequest) {
-    return new ResponseEntity<ErrorResponse>(
-        new ErrorResponse().code(exe.getCode()).message(exe.getErrorMessage()),
-        HttpStatus.NOT_FOUND);
+  public ResponseEntity<ErrorResponse> resourceNotFoundException(UserNotFoundException exe, WebRequest webRequest) {
+    return new ResponseEntity<ErrorResponse>(new ErrorResponse().code(exe.getCode()).message(exe.getErrorMessage()), HttpStatus.NOT_FOUND);
   }
 
   @ExceptionHandler(InvalidQuestionException.class)

@@ -22,11 +22,13 @@ public class QuestionDao {
 
   @PersistenceContext private EntityManager entityManager;
 
+  //This method persists the given question in the database
   public void createQuestion(QuestionsEntity questionsEntity) {
     entityManager.persist(questionsEntity);
   }
 
-  public List<QuestionsEntity> getAllQuestions(String accessToken){
+  //This method retrieves all the questions present in the database
+  public List<QuestionsEntity> getAllQuestions(){
       List<QuestionsEntity> questionList = null;
 
       TypedQuery<QuestionsEntity> query = entityManager.createNamedQuery("allQuestions", QuestionsEntity.class);
@@ -54,6 +56,8 @@ public class QuestionDao {
       }
   }
 
+  //This method fetches the QuestionsEntity for the given uuid
+  //Returns QuestionsEntity if there exists a question for the given uuid, else return null
   public QuestionsEntity getQuestionByUuid(String quesUuid)
   {
     try {
@@ -65,7 +69,7 @@ public class QuestionDao {
   }
 
   /*
-  This method
+  This method modified the content of the question corresponding to the specified uuid
    */
   public void editQuestion(QuestionsEntity questionsEntity) {
     entityManager.merge(questionsEntity);   // Changing the state of the entity from detached to persistent
