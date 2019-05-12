@@ -17,21 +17,22 @@ import java.util.LinkedList;
 import java.util.List;
 import java.util.UUID;
 
+/** This controller class manages the answer management functionalities */
 @RestController
 public class AnswerController {
 
   @Autowired private AnswerBusinessService answerBusinessService;
 
-  // This method will be called when the request pattern is of type
-  // /question/{questionId}/answer/create and incoming request is of type POST
-  // This method receives questionUuid whose answer should be stored in the database, accessToken of
-  // the user creating the answer and answer string
-  // This method creates the AnswerEntity object and populates it with
-  // - answer string from incoming request
-  // - generates and sets the UUID
-  // - sets the current time
-  // Sends the answerentity object to business logic to be persisted in the database
-  // On success, returns the answer UUID with message ANSWER CREATED and Http Status code 200
+  /**
+   * This method handles the Http Request for posting an answer to a question
+   *
+   * @param answerRequest
+   * @param questionUuid
+   * @param accessToken
+   * @return
+   * @throws AuthorizationFailedException
+   * @throws InvalidQuestionException
+   */
   @RequestMapping(
       method = RequestMethod.POST,
       path = "/question/{questionId}/answer/create",
@@ -56,13 +57,16 @@ public class AnswerController {
     return new ResponseEntity<AnswerResponse>(answerResponse, HttpStatus.OK);
   }
 
-  // This method will be called when the request pattern is /answer/edit/{answerId} and incoming
-  // request is of type PUT
-  // This method receives the answerUuid of the answer which should be edited, accessToken of the
-  // user performing the operation and the new answer content
-  // This method calls the business logic method to update the answer in the database
-  // On success, returns the answer UUID with message ANSWER EDITED and Http Status code 200
-  // throws AuthorizationFailedException , AnswerNotFoundException
+  /**
+   * This method handles the Http request for updating a post answer
+   *
+   * @param answerEditRequest
+   * @param answerUuid
+   * @param accessToken
+   * @return
+   * @throws AuthorizationFailedException
+   * @throws AnswerNotFoundException
+   */
   @RequestMapping(
       method = RequestMethod.PUT,
       path = "/answer/edit/{answerId}",
@@ -80,28 +84,39 @@ public class AnswerController {
 
     return new ResponseEntity<AnswerEditResponse>(editResponse, HttpStatus.OK);
   }
-    /*
-    This method will be called when the request pattern is /answer/delete/{answerId}
-    This method receives the answer Id of the answer which is to be deleted and the access Token of the logged in user
-    It accepts an incoming HTTP Verb type DELETE and produces a JSON response on successfully deleting the answer in a
-    Response Entity<T> type class provided by Java Spring framework along with HTTP Status Code 200 containing the answer UUID
-    and the status as "ANSWER DELETED". Further, this method calls the Business logic in the Service layer to delete the answer
-    in the Database & throws AuthorizationFailedException and AnswerNotFoundException as exception cases
-     */
-    @RequestMapping(
-            method = RequestMethod.DELETE,
-            path = "/answer/delete/{answerId}",
-            produces = MediaType.APPLICATION_JSON_UTF8_VALUE
-    )
-    public ResponseEntity<AnswerDeleteResponse> deleteAnswer( @PathVariable("answerId") final String answerUuid,
-                                                              @RequestHeader("authorization") final String accessToken)
-            throws AuthorizationFailedException, AnswerNotFoundException {
-        answerBusinessService.deleteAnswer(answerUuid,accessToken);
-        AnswerDeleteResponse answerDeleteResponse = new AnswerDeleteResponse().id(answerUuid).status("ANSWER DELETED");
-        return new ResponseEntity<AnswerDeleteResponse>(answerDeleteResponse,HttpStatus.OK);
-    }
 
+  /**
+   * This method handles a HTTP request for deleting a posted answer
+   *
+   * @param answerUuid
+   * @param accessToken
+   * @return
+   * @throws AuthorizationFailedException
+   * @throws AnswerNotFoundException
+   */
+  @RequestMapping(
+      method = RequestMethod.DELETE,
+      path = "/answer/delete/{answerId}",
+      produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
+  public ResponseEntity<AnswerDeleteResponse> deleteAnswer(
+      @PathVariable("answerId") final String answerUuid,
+      @RequestHeader("authorization") final String accessToken)
+      throws AuthorizationFailedException, AnswerNotFoundException {
+    answerBusinessService.deleteAnswer(answerUuid, accessToken);
+    AnswerDeleteResponse answerDeleteResponse =
+        new AnswerDeleteResponse().id(answerUuid).status("ANSWER DELETED");
+    return new ResponseEntity<AnswerDeleteResponse>(answerDeleteResponse, HttpStatus.OK);
+  }
 
+  /**
+   * This method handles HTTP request to retreive list of asnwers for a particular question
+   *
+   * @param questionId
+   * @param accessToken
+   * @return
+   * @throws AuthorizationFailedException
+   * @throws InvalidQuestionException
+   */
   @RequestMapping(
       method = RequestMethod.GET,
       value = "/answer/all/{questionId}",
@@ -124,6 +139,4 @@ public class AnswerController {
     }
     return new ResponseEntity<List<AnswerDetailsResponse>>(list, HttpStatus.OK);
   }
-
-
 }

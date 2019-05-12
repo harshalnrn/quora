@@ -1,7 +1,6 @@
 package com.upgrad.quora.service.dao;
 
 import com.upgrad.quora.service.entity.QuestionsEntity;
-import com.upgrad.quora.service.entity.UserAuthTokenEntity;
 import com.upgrad.quora.service.exception.AuthorizationFailedException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;
@@ -10,7 +9,6 @@ import javax.persistence.EntityManager;
 import javax.persistence.NoResultException;
 import javax.persistence.PersistenceContext;
 import javax.persistence.TypedQuery;
-import java.time.ZonedDateTime;
 import java.util.List;
 
 /**
@@ -35,20 +33,21 @@ public class QuestionDao {
 
   /**
    * This method is used to retreive all the questions in quora application from the database
+   *
    * @return
    * @throws AuthorizationFailedException
    */
-  public List<QuestionsEntity> getAllQuestions(){
-      List<QuestionsEntity> questionList = null;
+  public List<QuestionsEntity> getAllQuestions() {
+    List<QuestionsEntity> questionList = null;
 
-      TypedQuery<QuestionsEntity> query = entityManager.createNamedQuery("allQuestions", QuestionsEntity.class);
-      questionList = query.getResultList();
+    TypedQuery<QuestionsEntity> query =
+        entityManager.createNamedQuery("allQuestions", QuestionsEntity.class);
+    questionList = query.getResultList();
 
-      return questionList;
+    return questionList;
   }
 
-
-    /**
+  /**
    * This method is used to delete a question from the database
    *
    * @param questionEntity
