@@ -17,7 +17,10 @@ import org.springframework.transaction.annotation.Transactional;
 import java.time.ZonedDateTime;
 import java.util.List;
 
-/** This service class has methods related to create/edit/delete/get questions */
+/**
+ * This service class has methods related to business rules of following functionalities
+ * create/edit/delete/get questions
+ */
 @Service
 @Transactional(propagation = Propagation.REQUIRED)
 public class QuestionBusinessService {
@@ -27,7 +30,8 @@ public class QuestionBusinessService {
   @Autowired private UserDao userDao;
 
   /**
-   * This method is used to create/post a new question, and handles various scenarios
+   * This method is used to manage business rules to create/post a new question, and handles various
+   * scenarios
    *
    * @param questionsEntity
    * @param accessToken
@@ -53,7 +57,8 @@ public class QuestionBusinessService {
   }
 
   /**
-   * This method is used to edit the posted questions and handles multiple scenarios
+   * This method is used to manage business rules to edit the posted questions and handles multiple
+   * scenarios
    *
    * @param questionEntity
    * @param accessToken
@@ -66,7 +71,7 @@ public class QuestionBusinessService {
     final QuestionsEntity existingQuestionEntity =
         questionDao.getQuestionByUuid(questionEntity.getUuid());
 
-      final UserAuthTokenEntity userAuthTokenEntity = userDao.getAuthToken(accessToken);
+    final UserAuthTokenEntity userAuthTokenEntity = userDao.getAuthToken(accessToken);
 
     if (existingQuestionEntity == null) {
       throw new InvalidQuestionException("QUES-001", "Entered question uuid does not exist");
@@ -86,12 +91,13 @@ public class QuestionBusinessService {
           GenericExceptionCode.ATHR_003_QUES_EDIT.getCode(),
           GenericExceptionCode.ATHR_003_QUES_EDIT.getDescription());
     }
-      existingQuestionEntity.setContent(questionEntity.getContent());
+    existingQuestionEntity.setContent(questionEntity.getContent());
     updateQuestion(existingQuestionEntity);
   }
 
   /**
-   * This method is used to persist the update questionEntity using JPA method
+   * This method is used to manage business rules to persist the update questionEntity using JPA
+   * method
    *
    * @param updatedQuestionsEntity
    */
@@ -100,7 +106,7 @@ public class QuestionBusinessService {
   }
 
   /**
-   * This method is used to get all the questions in quora application
+   * This method is used to handle business rules to get all the questions in quora application
    *
    * @param accessToken
    * @return
@@ -125,7 +131,8 @@ public class QuestionBusinessService {
   }
 
   /**
-   * This method is used to delete the posted user and handles multiple scenarios
+   * This method is used to manage business rules to delete the posted question and handles multiple
+   * scenarios
    *
    * @param uuid
    * @param accessToken
@@ -175,7 +182,7 @@ public class QuestionBusinessService {
   }
 
   /**
-   * This method gets all the questions of a particular User
+   * This method is used to manage business rules for getting all the questions of a particular User
    *
    * @param userUuid
    * @param accessToken

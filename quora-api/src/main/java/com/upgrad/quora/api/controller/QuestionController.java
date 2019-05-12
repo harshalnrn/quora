@@ -18,7 +18,10 @@ import java.util.LinkedList;
 import java.util.List;
 import java.util.UUID;
 
-/** This is a controller class for Question Management functionalities of quora application */
+/**
+ * This is a controller class for handling http requests related to Question Management
+ * functionalities of quora application
+ */
 @RestController
 @RequestMapping("/question")
 public class QuestionController {
@@ -26,7 +29,7 @@ public class QuestionController {
   @Autowired QuestionBusinessService questionBusinessService;
 
   /**
-   * This method used by user to create/post a new question
+   * This method used to handle http request of user to create/post a new question
    *
    * @param questionRequest
    * @param accessToken
@@ -54,7 +57,8 @@ public class QuestionController {
   }
 
   /**
-   * This method is used by user to get all the available questions on quora application
+   * This method is used to handle http request by user to get all the available questions on quora
+   * application
    *
    * @param accessToken
    * @return returns ResponseEntity enbedded with model object or error object
@@ -77,7 +81,7 @@ public class QuestionController {
   }
 
   /**
-   * This method used by the owner /admin to edit a posted question
+   * This method used to handle http request by the owner /admin to edit a posted question
    *
    * @param quesUuid
    * @param accessToken
@@ -87,26 +91,29 @@ public class QuestionController {
    * @throws InvalidQuestionException
    */
   @RequestMapping(
-          method = RequestMethod.PUT,
-          value = "/edit/{questionId}",
-          consumes = MediaType.APPLICATION_JSON_UTF8_VALUE,
-          produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
-  public ResponseEntity<QuestionEditResponse> editQuestion(@PathVariable("questionId") String quesUuid, @RequestHeader("authorization") String accessToken,
-                                                           QuestionRequest questionRequest) throws AuthorizationFailedException, InvalidQuestionException {
+      method = RequestMethod.PUT,
+      value = "/edit/{questionId}",
+      consumes = MediaType.APPLICATION_JSON_UTF8_VALUE,
+      produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
+  public ResponseEntity<QuestionEditResponse> editQuestion(
+      @PathVariable("questionId") String quesUuid,
+      @RequestHeader("authorization") String accessToken,
+      QuestionRequest questionRequest)
+      throws AuthorizationFailedException, InvalidQuestionException {
 
-      QuestionsEntity questionEntity = new QuestionsEntity();
-      questionEntity.setUuid(quesUuid);
-      questionEntity.setContent(questionRequest.getContent());
+    QuestionsEntity questionEntity = new QuestionsEntity();
+    questionEntity.setUuid(quesUuid);
+    questionEntity.setContent(questionRequest.getContent());
 
-      questionBusinessService.editQuestionService(accessToken , questionEntity);
+    questionBusinessService.editQuestionService(accessToken, questionEntity);
 
-      QuestionEditResponse questionEditResponse = new QuestionEditResponse().id(quesUuid).status("QUESTION EDITED");
-      return new ResponseEntity<QuestionEditResponse>(questionEditResponse, HttpStatus.CREATED);
+    QuestionEditResponse questionEditResponse =
+        new QuestionEditResponse().id(quesUuid).status("QUESTION EDITED");
+    return new ResponseEntity<QuestionEditResponse>(questionEditResponse, HttpStatus.CREATED);
   }
 
-
-    /**
-   * This method is used by owner/admin to delete the posted question
+  /**
+   * This method is used to handle http request by owner/admin to delete the posted question
    *
    * @param questionUuid
    * @param accessToken
@@ -132,7 +139,8 @@ public class QuestionController {
   }
 
   /**
-   * This method is used by user, to only retreive questions, that belong to them
+   * This method is used to handle http request by user, to only retreive questions, that belong to
+   * them
    *
    * @param userId
    * @param accessToken

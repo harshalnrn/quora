@@ -1,6 +1,5 @@
 package com.upgrad.quora.service.dao;
 
-
 import com.upgrad.quora.service.entity.AnswerEntity;
 import com.upgrad.quora.service.entity.QuestionsEntity;
 import org.springframework.stereotype.Repository;
@@ -16,13 +15,21 @@ public class AnswerDao {
 
   @PersistenceContext private EntityManager entityManager;
 
-  // This method receives the Answer object to be persisted in the database
+  /**
+   * This method receives the Answer object to be persisted in the database
+   *
+   * @param answerEntity
+   */
   public void createAnswer(AnswerEntity answerEntity) {
     entityManager.persist(answerEntity);
   }
 
-  // This method fetches the answerEntity for the given Uuid from the database
-  // Returns AnswerEntity object for the given Uuid if it exists, else returns null
+  /**
+   * This method fetches the answerEntity for the given Uuid from the database
+   *
+   * @param answerUuid
+   * @return
+   */
   public AnswerEntity getAnswerByUuid(String answerUuid) {
     try {
       TypedQuery<AnswerEntity> answerByUuidQuery =
@@ -34,6 +41,12 @@ public class AnswerDao {
     }
   }
 
+  /**
+   * This method retrives list of answers for the given question
+   *
+   * @param questionsEntity
+   * @return
+   */
   public List<AnswerEntity> getAnswerByQUuid(QuestionsEntity questionsEntity) {
     try {
       TypedQuery<AnswerEntity> answerByQuidQuery =
@@ -45,14 +58,20 @@ public class AnswerDao {
     }
   }
 
-  // This method receives the AnswerEntity to be updated in the database
+  /**
+   * This calls the JPA method to update an answer
+   *
+   * @param updatedAnswerEntity
+   */
   public void updateAnswer(AnswerEntity updatedAnswerEntity) {
     entityManager.merge(updatedAnswerEntity);
   }
-
-  /*
-  This method receives the Answer entity to be deleted in the Database
+  /**
+   * This method calls the JPA method to delete an answer
+   *
+   * @param answerEntity
    */
-    public void deleteAnswer(AnswerEntity answerEntity) { entityManager.remove(answerEntity);}
-
+  public void deleteAnswer(AnswerEntity answerEntity) {
+    entityManager.remove(answerEntity);
+  }
 }
