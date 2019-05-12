@@ -1,7 +1,9 @@
 package com.upgrad.quora.service.entity;
+
 import javax.persistence.*;
 import javax.validation.constraints.NotNull;
 import java.time.ZonedDateTime;
+import javax.validation.constraints.Size;
 
 @Entity
 @Table(name = "ANSWER")
@@ -15,35 +17,31 @@ public class AnswerEntity {
   @Id
   @Column(name = "id")
   @GeneratedValue(strategy = GenerationType.IDENTITY)
-  // @Size()
   private Integer id;
 
   @Column(name = "uuid")
   @NotNull
-  // @Size()
+  @Size(max = 200)
   private String uuid;
 
   @Column(name = "ans")
   @NotNull
-  // @Size()
+  @Size(max = 255)
   private String ans;
 
   @Column(name = "date")
   @NotNull
-  // @Size()
   private ZonedDateTime date;
 
-    @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "user_id")
-    @NotNull
-    //@Size()
-    private UserEntity users; // takes primary key of users
+  @ManyToOne(fetch = FetchType.LAZY)
+  @JoinColumn(name = "user_id")
+  @NotNull
+  private UserEntity users; // takes primary key of users
 
-    @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "question_id")
-    @NotNull
-    //@Size()
-    private QuestionsEntity questionsEntity;
+  @ManyToOne(fetch = FetchType.LAZY)
+  @JoinColumn(name = "question_id")
+  @NotNull
+  private QuestionsEntity questionsEntity;
 
   public Integer getId() {
     return id;

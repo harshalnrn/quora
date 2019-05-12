@@ -101,7 +101,7 @@ public class UserController {
     signinResponse.setId(userAuthTokenEntity.getUsers().getUuid());
     signinResponse.setMessage("SIGNED IN SUCCESSFULLY");
     HttpHeaders httpHeaders = new HttpHeaders();
-    httpHeaders.set("accessToken", userAuthTokenEntity.getAccess_token());
+    httpHeaders.set("access-token", userAuthTokenEntity.getAccess_token());
 
     return new ResponseEntity<SigninResponse>(signinResponse, httpHeaders, HttpStatus.OK);
   }
