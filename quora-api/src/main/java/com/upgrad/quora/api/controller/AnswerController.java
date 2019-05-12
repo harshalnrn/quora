@@ -51,11 +51,10 @@ public class AnswerController {
 
     answerBusinessService.createAnswer(accessToken, questionUuid, answerEntity);
 
-    AnswerResponse answerResponse =
-        new AnswerResponse().id(answerEntity.getUuid()).status("ANSWER CREATED");
+        AnswerResponse answerResponse = new AnswerResponse().id(answerEntity.getUuid()).status("ANSWER CREATED");
 
-    return new ResponseEntity<AnswerResponse>(answerResponse, HttpStatus.OK);
-  }
+        return new ResponseEntity<AnswerResponse>( answerResponse , HttpStatus.CREATED);
+    }
 
   /**
    * This method handles the Http request for updating a post answer
@@ -79,8 +78,7 @@ public class AnswerController {
       throws AuthorizationFailedException, AnswerNotFoundException {
     answerBusinessService.updateAnswer(accessToken, answerUuid, answerEditRequest.getContent());
 
-    AnswerEditResponse editResponse =
-        new AnswerEditResponse().id(answerUuid).status("ANSWER EDITED");
+        AnswerEditResponse editResponse = new AnswerEditResponse().id(answerUuid).status("ANSWER EDITED");
 
     return new ResponseEntity<AnswerEditResponse>(editResponse, HttpStatus.OK);
   }

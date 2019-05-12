@@ -20,6 +20,7 @@ public enum GenericExceptionCode {
 
   /** These enum constants cover all errors related to code ATHR-002 */
   ATHR_002_GET("ATHR-002", "User is signed out.Sign in first to get user details"),
+  ATHR_002_QUES("ATHR-002", "User is signed out.Sign in first to post a question"),
   ATHR_002_USER_DELETE("ATHR-002", "User is signed out"),
   ATHR_002_QUES_GET("ATHR-002", "User is signed out.Sign in first to get all questions"),
   ATHR_002_QUES_DELETE("ATHR-002", "User is signed out.Sign in first to delete a question"),
