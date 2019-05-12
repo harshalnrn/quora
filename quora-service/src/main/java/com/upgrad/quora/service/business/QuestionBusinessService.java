@@ -73,9 +73,7 @@ public class QuestionBusinessService {
 
     final UserAuthTokenEntity userAuthTokenEntity = userDao.getAuthToken(accessToken);
 
-    if (existingQuestionEntity == null) {
-      throw new InvalidQuestionException("QUES-001", "Entered question uuid does not exist");
-    } else if (userAuthTokenEntity == null) {
+    if (userAuthTokenEntity == null) {
       throw new AuthorizationFailedException(
           GenericExceptionCode.ATHR_001.getCode(), GenericExceptionCode.ATHR_001.getDescription());
     } else if ((userAuthTokenEntity.getLogoutAt() != null)
@@ -83,13 +81,15 @@ public class QuestionBusinessService {
       throw new AuthorizationFailedException(
           GenericExceptionCode.ATHR_002_EDIT_QUESTION.getCode(),
           GenericExceptionCode.ATHR_002_EDIT_QUESTION.getDescription());
-    } else if (!existingQuestionEntity
+    } else if (existingQuestionEntity != null && !existingQuestionEntity
         .getUserEntity()
         .getId()
         .equals(userAuthTokenEntity.getUsers().getId())) {
       throw new AuthorizationFailedException(
           GenericExceptionCode.ATHR_003_QUES_EDIT.getCode(),
           GenericExceptionCode.ATHR_003_QUES_EDIT.getDescription());
+    } else if (existingQuestionEntity == null) {
+      throw new InvalidQuestionException("QUES-001", "Entered question uuid does not exist");
     }
     existingQuestionEntity.setContent(questionEntity.getContent());
     updateQuestion(existingQuestionEntity);

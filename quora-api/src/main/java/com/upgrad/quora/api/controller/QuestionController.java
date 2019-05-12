@@ -52,7 +52,7 @@ public class QuestionController {
     QuestionResponse response = new QuestionResponse();
     response.setId(questionsEntity.getUuid());
     response.setStatus("QUESTION CREATED");
-    ResponseEntity<QuestionResponse> responseEntity = new ResponseEntity(response, HttpStatus.OK);
+    ResponseEntity<QuestionResponse> responseEntity = new ResponseEntity(response, HttpStatus.CREATED);
     return responseEntity;
   }
 
@@ -70,9 +70,10 @@ public class QuestionController {
       produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
   public ResponseEntity<List<QuestionDetailsResponse>> getAllQuestions(
       @RequestHeader("authorization") String accessToken) throws AuthorizationFailedException {
-    QuestionDetailsResponse response = new QuestionDetailsResponse();
+
     List<QuestionDetailsResponse> list = new LinkedList<QuestionDetailsResponse>();
     for (QuestionsEntity questionsEntity : questionBusinessService.getQuestionList(accessToken)) {
+      QuestionDetailsResponse response = new QuestionDetailsResponse();
       response.setId(questionsEntity.getUuid());
       response.setContent(questionsEntity.getContent());
       list.add(response);
@@ -109,7 +110,7 @@ public class QuestionController {
 
     QuestionEditResponse questionEditResponse =
         new QuestionEditResponse().id(quesUuid).status("QUESTION EDITED");
-    return new ResponseEntity<QuestionEditResponse>(questionEditResponse, HttpStatus.CREATED);
+    return new ResponseEntity<QuestionEditResponse>(questionEditResponse, HttpStatus.OK);
   }
 
   /**
