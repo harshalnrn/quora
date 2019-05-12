@@ -21,8 +21,16 @@ public class UserBusinessService {
 
   @Autowired private PasswordCryptographyProvider passwordCryptographyProvider;
 
-  // @Autowired private JwtTokenProvider jwtTokenProvider;
-
+  /**
+   * This method takes a UserEntity object as a parameter and encrypts the password of the user
+   * then, passes it to the DAO layer to persist the user in the Database. Checks whether the
+   * username or email provided by the user already exists in the Database & accordingly throws
+   * Exceptions
+   *
+   * @param userEntity
+   * @return User Entity persisted in the DB
+   * @throws SignUpRestrictedException
+   */
   public UserEntity signUp(UserEntity userEntity) throws SignUpRestrictedException {
 
     // Check if the user exists for given username
@@ -46,13 +54,25 @@ public class UserBusinessService {
     return userDao.createUser(userEntity);
   }
 
+  /**
+   * This method takes the username and the password decrypted by the Controller, encrypts the
+   * password using the encrypt method in the Password Cryptography Provider class and then verifies
+   * it with the existing password in the DB. Generates an JWT Token (Access Token),issue time &
+   * Expiry time using the Jwt Token Provider class and generates a UserAuthToken entity using the
+   * corresponding fields and passes it to the DAO layer to persist in the Database
+   *
+   * @param username
+   * @param password
+   * @return UserAuthToken Entity persisted in the DB
+   * @throws AuthenticationFailedException
+   */
   public UserAuthTokenEntity userLogin(String username, String password)
       throws AuthenticationFailedException {
 
     // validate username
     UserEntity userEntity = userDao.findUserByUserName(username);
     // no null check here . vimp to do null check on objects before using them
-    // encryptand validate password
+    // encrypt and validate password
     if (userEntity != null) {
       String encryptedPassword =
           passwordCryptographyProvider.encrypt(password, userEntity.getSalt());
@@ -68,7 +88,6 @@ public class UserBusinessService {
         userAuthTokenEntity.setAccess_token(accessToken);
         userAuthTokenEntity.setUsers(userEntity);
         userAuthTokenEntity.setLoginAt(issuedTime);
-        // userAuthTokenEntity.setLogoutAt(expiryTime); shall be set after sign out
         userAuthTokenEntity.setExpiresAt(expiryTime); // why 2 columns
         userAuthTokenEntity.setUuid(UUID.randomUUID().toString());
         userDao.createAuthToken(
@@ -85,6 +104,13 @@ public class UserBusinessService {
     }
   }
 
+  /**
+   * This method updates the Log-out time of the user when he Signs out from the application post verification that the
+   * Access token of the user exists in the Database and matches with access token entered by the Signed in user
+   * @param access_token
+   * @return User Auth Token Entity object
+   * @throws SignOutRestrictedException
+   */
   // login-logout auditing is done in user-auth-token-entity
   public UserAuthTokenEntity signOut(String access_token) throws SignOutRestrictedException {
     UserAuthTokenEntity userAuthToken =
@@ -101,8 +127,17 @@ public class UserBusinessService {
     }
   }
 
-  /*
-  This method is used to delete the details of a signed in and Authorized user by an Admin user
+  /**
+   * This method is used to delete the details of a signed in and Authorized user by an Admin user.
+   * Checks if the Auth Token is present in the Database, the user UUID is present in the Database,
+   * the user has signed out or not, & if a Non-admin user is trying to delete a user. On
+   * successfull Authorization, the user Entity is passed to the DAO layer to be removed
+   *
+   * @param userUuid
+   * @param authorization
+   * @return User Entity
+   * @throws AuthorizationFailedException
+   * @throws UserNotFoundException
    */
   public UserEntity deleteUserByUuid(final String userUuid, final String authorization)
       throws AuthorizationFailedException, UserNotFoundException {
@@ -140,10 +175,16 @@ public class UserBusinessService {
     return userDao.deleteUser(userToDelete);
   }
 
-  /*
-  This method is used to fetch all the details of a signed in and Authorized user. It takes the Access Token of the Logged-in
-  User and the User UUID from the Controller Method. It fetches the User Details from the DAO class and returns it to the Controller
-  method
+  /**
+   * This method is used to fetch all the details of a signed in and Authorized user. It takes the
+   * Access Token of the Logged-in User and the User UUID from the Controller Method. It fetches the
+   * User Details from the DAO class and returns it to the Controller method
+   *
+   * @param userUuid
+   * @param access_token
+   * @return Details of the User in User Entity object
+   * @throws AuthorizationFailedException
+   * @throws UserNotFoundException
    */
   public UserEntity getUserDetails(final String userUuid, final String access_token)
       throws AuthorizationFailedException, UserNotFoundException {
@@ -168,9 +209,14 @@ public class UserBusinessService {
     } else return userEntity;
   }
 
-  // Checks if the user has signed out by comparing if the current time is after the loggedOutTime
-  // received by the method
-  // Returns true if the current-time is after loggedOutTime(sign-out has happened), false otherwise
+  /**
+   * Checks if the user has signed out by comparing if the current time is after the loggedOutTime
+   * received by the method. Returns true if the current-time is after loggedOutTime(sign-out has
+   * happened), false otherwise
+   *
+   * @param loggedOutTime
+   * @return boolean value true/false
+   */
   public boolean hasUserSignedOut(ZonedDateTime loggedOutTime) {
     return (loggedOutTime != null && ZonedDateTime.now().isAfter(loggedOutTime));
   }

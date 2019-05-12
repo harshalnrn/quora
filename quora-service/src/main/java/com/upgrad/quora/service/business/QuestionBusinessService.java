@@ -55,21 +55,22 @@ public class QuestionBusinessService {
   /**
    * This method is used to edit the posted questions and handles multiple scenarios
    *
-   * @param quesUuid
+   * @param questionEntity
    * @param accessToken
    * @return
    * @throws InvalidQuestionException
    * @throws AuthorizationFailedException
    */
-  public QuestionsEntity editQuestionService(String quesUuid, String accessToken)
+  public void editQuestionService(String accessToken, QuestionsEntity questionEntity)
       throws InvalidQuestionException, AuthorizationFailedException {
-    final QuestionsEntity questionsEntity = questionDao.getQuestionByUuid(quesUuid);
-    final UserAuthTokenEntity userAuthTokenEntity = userDao.getAuthToken(accessToken);
-    if (questionsEntity == null) {
-      throw new InvalidQuestionException(
-          GenericExceptionCode.QUES_001.getCode(), GenericExceptionCode.QUES_001.getDescription());
-    }
-    if (userAuthTokenEntity == null) {
+    final QuestionsEntity existingQuestionEntity =
+        questionDao.getQuestionByUuid(questionEntity.getUuid());
+
+      final UserAuthTokenEntity userAuthTokenEntity = userDao.getAuthToken(accessToken);
+
+    if (existingQuestionEntity == null) {
+      throw new InvalidQuestionException("QUES-001", "Entered question uuid does not exist");
+    } else if (userAuthTokenEntity == null) {
       throw new AuthorizationFailedException(
           GenericExceptionCode.ATHR_001.getCode(), GenericExceptionCode.ATHR_001.getDescription());
     } else if ((userAuthTokenEntity.getLogoutAt() != null)
@@ -77,7 +78,7 @@ public class QuestionBusinessService {
       throw new AuthorizationFailedException(
           GenericExceptionCode.ATHR_002_EDIT_QUESTION.getCode(),
           GenericExceptionCode.ATHR_002_EDIT_QUESTION.getDescription());
-    } else if (!questionsEntity
+    } else if (!existingQuestionEntity
         .getUserEntity()
         .getId()
         .equals(userAuthTokenEntity.getUsers().getId())) {
@@ -85,7 +86,8 @@ public class QuestionBusinessService {
           GenericExceptionCode.ATHR_003_QUES_EDIT.getCode(),
           GenericExceptionCode.ATHR_003_QUES_EDIT.getDescription());
     }
-    return questionsEntity;
+      existingQuestionEntity.setContent(questionEntity.getContent());
+    updateQuestion(existingQuestionEntity);
   }
 
   /**
@@ -106,7 +108,20 @@ public class QuestionBusinessService {
    */
   public List<QuestionsEntity> getQuestionList(String accessToken)
       throws AuthorizationFailedException {
-    return questionDao.getAllQuestions(accessToken);
+
+    UserAuthTokenEntity tokenEntity = userDao.getAuthToken(accessToken);
+
+    if (tokenEntity == null) {
+      throw new AuthorizationFailedException(
+          GenericExceptionCode.ATHR_001.getCode(), GenericExceptionCode.ATHR_001.getDescription());
+    } else if (tokenEntity.getLogoutAt() != null
+        && tokenEntity.getLogoutAt().isBefore(ZonedDateTime.now())) {
+      throw new AuthorizationFailedException(
+          GenericExceptionCode.ATHR_002_QUES_GET.getCode(),
+          GenericExceptionCode.ATHR_002_QUES_GET.getDescription());
+    }
+
+    return questionDao.getAllQuestions();
   }
 
   /**

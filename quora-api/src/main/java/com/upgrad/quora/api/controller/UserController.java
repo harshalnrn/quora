@@ -29,6 +29,18 @@ public class UserController {
 
   @Autowired private UserBusinessService userBusinessService;
 
+  /**
+   * This method accepts an HTTP method of POST type and is used to sign-up a user using the
+   * SignUpUserRequest model. The corresponding fields of the user are set using the Request model
+   * fields. These parameters are passed to the Service layer where the business logic
+   * implementation takes place. Response Entity generic class provided Spring is used to map the
+   * SignupUserResponse as an object. It produces a JSON Response,with HTTP status code as =
+   * CREATED(201) and corresponding message
+   *
+   * @param signupUserRequest
+   * @return Sign up Response model & HTTP status in a Response Entity object
+   * @throws SignUpRestrictedException
+   */
   @RequestMapping(
       method = RequestMethod.POST,
       path = "/signup",
@@ -45,7 +57,7 @@ public class UserController {
     userEntity.setEmail(signupUserRequest.getEmailAddress());
     userEntity.setPassword(signupUserRequest.getPassword());
     userEntity.setCountry(signupUserRequest.getCountry());
-    userEntity.setAboutme(signupUserRequest.getAboutMe());
+    userEntity.setAboutMe(signupUserRequest.getAboutMe());
     userEntity.setDob(signupUserRequest.getDob());
     userEntity.setCountry(signupUserRequest.getCountry());
     userEntity.setContactNumber(signupUserRequest.getContactNumber());
@@ -61,6 +73,17 @@ public class UserController {
     return new ResponseEntity<SignupUserResponse>(userResponse, HttpStatus.CREATED);
   }
 
+  /**
+   * This method accepts an HTTP method of POST type and is used to authenticate a user on Sign in
+   * The access token of the Signed in User is provided as an input and is decoded and passed to the
+   * Service Layer for authentication purpose. Response Entity generic class provided Spring is used
+   * to map the SigninResponse as an object. It produces a JSON Response,with HTTP status code as =
+   * OK(200) and corresponding message
+   *
+   * @param authorisationHeader
+   * @return Sign in Response model with HTTP header, HTTP status in a Response Entity object
+   * @throws AuthenticationFailedException
+   */
   @RequestMapping( // spring default exception handling for internal error
       method = RequestMethod.POST,
       value = "/signin",
@@ -83,6 +106,17 @@ public class UserController {
     return new ResponseEntity<SigninResponse>(signinResponse, httpHeaders, HttpStatus.OK);
   }
 
+  /**
+   * This method accepts a HTTP method of POST type and is called when a user tries to Sign out from
+   * the Application. It accepts the access Token of the user to be signed out and passes it to the
+   * Service Layer for Authentication purpose. Response Entity generic class provided Spring is used
+   * to map the SignoutResponse as an object. It produces a JSON Response,with HTTP status code as
+   * =OK(200) and corresponding message
+   *
+   * @param authorisationHeader
+   * @return Sign Out Response model & HTTP status in a Response Entity object
+   * @throws SignOutRestrictedException
+   */
   @RequestMapping(
       method = RequestMethod.POST,
       path = "/signout",
