@@ -1,5 +1,6 @@
 package com.upgrad.quora.service.entity;
 
+import javax.validation.constraints.Size;
 import org.hibernate.annotations.OnDelete;
 import org.hibernate.annotations.OnDeleteAction;
 
@@ -24,64 +25,61 @@ public class UserEntity {
   @Id
   @Column(name = "id")
   @GeneratedValue(strategy = GenerationType.IDENTITY)
-
-  // @Size()
   private Integer id;
 
   @Column(name = "uuid")
   @NotNull
-  // @Size()
+  @Size(max = 200)
   private String uuid;
 
   @Column(name = "firstname")
   @NotNull
-  // @Size()
+  @Size(max = 30)
   private String firstName;
 
   @Column(name = "lastname")
   @NotNull
-  // @Size()
+  @Size(max = 30)
   private String lastName;
 
   @Column(name = "username")
   @NotNull
-  // @Size()
+  @Size(max = 30)
   private String username;
 
   @Column(name = "email")
   @NotNull
-  // @Size()
-
+  @Size(max = 50)
   private String email;
 
   @Column(name = "password")
   @NotNull
-  // @Size()
+  @Size(max = 255)
   private String password;
 
   @Column(name = "salt")
   @NotNull
-  // @Size()
+  @Size(max = 200)
   private String salt;
 
   @Column(name = "country")
-  // @Size()
+  @Size(max = 30)
   private String country;
 
-  @Column(name = "aboutMe")
-  // @Size()
+  @Column(name = "aboutme")
+  @Size(max = 50)
   private String aboutMe;
 
   @Column(name = "dob")
-  // @Size()
+  @Size(max = 30)
   private String dob;
 
   @Column(name = "role")
-  // @Size()
+  @Size(max = 30)
   private String role;
 
   @Column(name = "contactnumber")
-  // @Size()
+  @Size(max = 30)
   private String contactNumber;
 
   @OneToMany(mappedBy = "users", fetch = FetchType.LAZY)
