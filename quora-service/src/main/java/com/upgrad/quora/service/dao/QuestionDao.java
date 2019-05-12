@@ -26,22 +26,13 @@ public class QuestionDao {
     entityManager.persist(questionsEntity);
   }
 
-  public List<QuestionsEntity> getAllQuestions(String accessToken)
-      throws AuthorizationFailedException {
-    UserAuthTokenEntity tokenEntity = userDao.getAuthToken(accessToken);
-    List<QuestionsEntity> questionList = null;
-    if (tokenEntity == null) {
-      throw new AuthorizationFailedException("ATHR-001", "User has not signed in");
-    } else if (tokenEntity.getLogoutAt() != null
-        && tokenEntity.getLogoutAt().isBefore(ZonedDateTime.now())) {
-      throw new AuthorizationFailedException(
-          "ATHR-002", "User is signed out.Sign in first to get all questions");
-    } else {
-      TypedQuery<QuestionsEntity> query =
-          entityManager.createNamedQuery("allQuestions", QuestionsEntity.class);
+  public List<QuestionsEntity> getAllQuestions(String accessToken){
+      List<QuestionsEntity> questionList = null;
+
+      TypedQuery<QuestionsEntity> query = entityManager.createNamedQuery("allQuestions", QuestionsEntity.class);
       questionList = query.getResultList();
-    }
-    return questionList;
+
+      return questionList;
   }
 
 

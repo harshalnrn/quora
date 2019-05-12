@@ -1,5 +1,6 @@
 package com.upgrad.quora.service.entity;
 
+import javax.validation.constraints.Size;
 import org.hibernate.annotations.OnDelete;
 import org.hibernate.annotations.OnDeleteAction;
 
@@ -21,34 +22,29 @@ public class QuestionsEntity {
     @Id
     @Column(name = "id")
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-
-    //@Size()
     private Integer id;
 
     @Column(name = "uuid")
     @NotNull
-   // @Size()
+    @Size(max = 200)
     private String uuid;
 
     @Column(name = "content")
     @NotNull
-    //@Size()
+    @Size(max = 500)
     private String content;
 
     @Column(name = "date")
     @NotNull
-    //@Size()
     private ZonedDateTime date;
 
     @ManyToOne
     @JoinColumn(name = "user_id")
     @NotNull
-    //@Size()
     private UserEntity userEntity;
 
    @OneToMany(mappedBy = "questionsEntity",fetch = FetchType.LAZY)
    @OnDelete(action=OnDeleteAction.CASCADE)
-   //@Size()
     private List<AnswerEntity> answersOfQuestion;
 
 
