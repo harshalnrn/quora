@@ -87,26 +87,25 @@ public class QuestionController {
    * @throws InvalidQuestionException
    */
   @RequestMapping(
-      method = RequestMethod.PUT,
-      value = "/edit/{questionId}",
-      consumes = MediaType.APPLICATION_JSON_UTF8_VALUE,
-      produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
-  public ResponseEntity<QuestionEditResponse> editQuestion(
-      @PathVariable("questionId") String quesUuid,
-      @RequestHeader("authorization") String accessToken,
-      QuestionRequest questionRequest)
-      throws AuthorizationFailedException, InvalidQuestionException {
-    QuestionsEntity questionsEntity =
-        questionBusinessService.editQuestionService(quesUuid, accessToken);
-    questionsEntity.setContent(questionRequest.getContent());
-    questionsEntity.setDate(ZonedDateTime.now());
-    questionBusinessService.updateQuestion(questionsEntity);
-    QuestionEditResponse questionEditResponse =
-        new QuestionEditResponse().id(quesUuid).status("QUESTION EDITED");
-    return new ResponseEntity<QuestionEditResponse>(questionEditResponse, HttpStatus.CREATED);
+          method = RequestMethod.PUT,
+          value = "/edit/{questionId}",
+          consumes = MediaType.APPLICATION_JSON_UTF8_VALUE,
+          produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
+  public ResponseEntity<QuestionEditResponse> editQuestion(@PathVariable("questionId") String quesUuid, @RequestHeader("authorization") String accessToken,
+                                                           QuestionRequest questionRequest) throws AuthorizationFailedException, InvalidQuestionException {
+
+      QuestionsEntity questionEntity = new QuestionsEntity();
+      questionEntity.setUuid(quesUuid);
+      questionEntity.setContent(questionRequest.getContent());
+
+      questionBusinessService.editQuestionService(accessToken , questionEntity);
+
+      QuestionEditResponse questionEditResponse = new QuestionEditResponse().id(quesUuid).status("QUESTION EDITED");
+      return new ResponseEntity<QuestionEditResponse>(questionEditResponse, HttpStatus.CREATED);
   }
 
-  /**
+
+    /**
    * This method is used by owner/admin to delete the posted question
    *
    * @param questionUuid
