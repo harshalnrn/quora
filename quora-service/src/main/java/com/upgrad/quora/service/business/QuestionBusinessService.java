@@ -62,7 +62,6 @@ public class QuestionBusinessService {
    *
    * @param questionEntity
    * @param accessToken
-   * @return
    * @throws InvalidQuestionException
    * @throws AuthorizationFailedException
    */
@@ -81,10 +80,11 @@ public class QuestionBusinessService {
       throw new AuthorizationFailedException(
           GenericExceptionCode.ATHR_002_EDIT_QUESTION.getCode(),
           GenericExceptionCode.ATHR_002_EDIT_QUESTION.getDescription());
-    } else if (existingQuestionEntity != null && !existingQuestionEntity
-        .getUserEntity()
-        .getId()
-        .equals(userAuthTokenEntity.getUsers().getId())) {
+    } else if (existingQuestionEntity != null
+        && !existingQuestionEntity
+            .getUserEntity()
+            .getUuid()
+            .equals(userAuthTokenEntity.getUsers().getUuid())) {
       throw new AuthorizationFailedException(
           GenericExceptionCode.ATHR_003_QUES_EDIT.getCode(),
           GenericExceptionCode.ATHR_003_QUES_EDIT.getDescription());
@@ -175,7 +175,7 @@ public class QuestionBusinessService {
    * This utility method checks if user has logged out
    *
    * @param loggedOutTime
-   * @return
+   * @return true or false
    */
   public boolean hasUserSignedOut(ZonedDateTime loggedOutTime) {
     return (loggedOutTime != null && ZonedDateTime.now().isAfter(loggedOutTime));
@@ -186,7 +186,7 @@ public class QuestionBusinessService {
    *
    * @param userUuid
    * @param accessToken
-   * @return
+   * @return List of Questions posted by a user
    * @throws AuthorizationFailedException
    * @throws UserNotFoundException
    */

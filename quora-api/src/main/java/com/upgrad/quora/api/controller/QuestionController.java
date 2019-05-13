@@ -33,7 +33,7 @@ public class QuestionController {
    *
    * @param questionRequest
    * @param accessToken
-   * @return returns ResponseEntity enbedded with model object or error object
+   * @return returns ResponseEntity embedded with model object or error object
    * @throws AuthorizationFailedException
    */
   @RequestMapping(

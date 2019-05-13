@@ -106,7 +106,10 @@ public class AnswerBusinessService {
   }
 
   /**
-   * This method manages business rules for deleting an existing posted answer
+   * This method manages business rules for deleting an existing posted answer. Performs various
+   * authorization checks for the logged-in user who is trying to delete an answer. This method gets
+   * the answer from the DB using UUID and then passes the Answer Entity to the DAO layer to remove
+   * it
    *
    * @param answerUuid
    * @param accessToken
@@ -150,7 +153,7 @@ public class AnswerBusinessService {
    *
    * @param questionUuid
    * @param token
-   * @return
+   * @return List of Answers belonging to the particular question
    * @throws AuthorizationFailedException
    * @throws InvalidQuestionException
    */
