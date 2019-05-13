@@ -45,7 +45,7 @@ public class UserEntity {
   @Column(name = "username")
   @NotNull
   @Size(max = 30)
-  private String username;
+  private String userName;
 
   @Column(name = "email")
   @NotNull
@@ -122,12 +122,12 @@ public class UserEntity {
     this.lastName = lastName;
   }
 
-  public String getUsername() {
-    return username;
+  public String getUserName() {
+    return userName;
   }
 
-  public void setUsername(String username) {
-    this.username = username;
+  public void setUserName(String username) {
+    this.userName = username;
   }
 
   public String getEmail() {
@@ -192,5 +192,22 @@ public class UserEntity {
 
   public void setContactNumber(String contactNumber) {
     this.contactNumber = contactNumber;
+  }
+
+  public List<AnswerEntity> getAnswersList() {
+    return answersList;
+  }
+
+  public void setAnswersList(List<AnswerEntity> answersList) {
+    this.answersList = answersList;
+  }
+
+  public List<QuestionsEntity> getQuestionsList() {
+    return questionsList;
+  }
+
+  public void setQuestionsList(
+      List<QuestionsEntity> questionsList) {
+    this.questionsList = questionsList;
   }
 }

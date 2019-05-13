@@ -53,7 +53,7 @@ public class UserController {
     userEntity.setUuid(UUID.randomUUID().toString());
     userEntity.setFirstName(signupUserRequest.getFirstName());
     userEntity.setLastName(signupUserRequest.getLastName());
-    userEntity.setUsername(signupUserRequest.getUserName());
+    userEntity.setUserName(signupUserRequest.getUserName());
     userEntity.setEmail(signupUserRequest.getEmailAddress());
     userEntity.setPassword(signupUserRequest.getPassword());
     userEntity.setCountry(signupUserRequest.getCountry());
@@ -101,7 +101,7 @@ public class UserController {
     signinResponse.setId(userAuthTokenEntity.getUsers().getUuid());
     signinResponse.setMessage("SIGNED IN SUCCESSFULLY");
     HttpHeaders httpHeaders = new HttpHeaders();
-    httpHeaders.set("access-token", userAuthTokenEntity.getAccess_token());
+    httpHeaders.set("access-token", userAuthTokenEntity.getAccessToken());
 
     return new ResponseEntity<SigninResponse>(signinResponse, httpHeaders, HttpStatus.OK);
   }

@@ -46,7 +46,7 @@ public class CommonController {
             .lastName(userEntity.getLastName())
             .emailAddress(userEntity.getEmail())
             .aboutMe(userEntity.getAboutMe())
-            .userName(userEntity.getUsername())
+            .userName(userEntity.getUserName())
             .dob(userEntity.getDob())
             .contactNumber(userEntity.getContactNumber())
             .country(userEntity.getCountry());
