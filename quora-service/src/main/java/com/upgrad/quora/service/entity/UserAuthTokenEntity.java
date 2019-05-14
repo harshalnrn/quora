@@ -10,7 +10,7 @@ import javax.validation.constraints.Size;
 @NamedQueries({
   @NamedQuery(
       name = "userAuthTokenByAccessToken",
-      query = "select ut from UserAuthTokenEntity ut where ut.access_token = :access_token")
+      query = "select ut from UserAuthTokenEntity ut where ut.accessToken = :access_token")
 })
 public class UserAuthTokenEntity {
 
