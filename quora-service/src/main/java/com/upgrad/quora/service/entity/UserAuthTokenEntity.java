@@ -10,7 +10,7 @@ import javax.validation.constraints.Size;
 @NamedQueries({
   @NamedQuery(
       name = "userAuthTokenByAccessToken",
-      query = "select ut from UserAuthTokenEntity ut where ut.access_token = :access_token")
+      query = "select ut from UserAuthTokenEntity ut where ut.accessToken = :access_token")
 })
 public class UserAuthTokenEntity {
 
@@ -32,7 +32,7 @@ public class UserAuthTokenEntity {
   @Column(name = "ACCESS_TOKEN")
   @NotNull
   @Size(max = 500)
-  private String access_token;
+  private String accessToken;
 
   @Column(name = "EXPIRES_AT")
   @NotNull
@@ -69,12 +69,12 @@ public class UserAuthTokenEntity {
     this.users = users;
   }
 
-  public String getAccess_token() {
-    return access_token;
+  public String getAccessToken() {
+    return accessToken;
   }
 
-  public void setAccess_token(String access_token) {
-    this.access_token = access_token;
+  public void setAccessToken(String accessToken) {
+    this.accessToken = accessToken;
   }
 
   public ZonedDateTime getExpiresAt() {

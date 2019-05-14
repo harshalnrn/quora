@@ -34,7 +34,7 @@ public class UserBusinessService {
   public UserEntity signUp(UserEntity userEntity) throws SignUpRestrictedException {
 
     // Check if the user exists for given username
-    UserEntity existingUserEntity = userDao.findUserByUserName(userEntity.getUsername());
+    UserEntity existingUserEntity = userDao.findUserByUserName(userEntity.getUserName());
     if (existingUserEntity != null) {
       throw new SignUpRestrictedException(
           GenericExceptionCode.SGR_001.getCode(), GenericExceptionCode.SGR_001.getDescription());
@@ -85,7 +85,7 @@ public class UserBusinessService {
             jwtTokenProvider.generateToken(userEntity.getUuid(), issuedTime, expiryTime);
 
         UserAuthTokenEntity userAuthTokenEntity = new UserAuthTokenEntity();
-        userAuthTokenEntity.setAccess_token(accessToken);
+        userAuthTokenEntity.setAccessToken(accessToken);
         userAuthTokenEntity.setUsers(userEntity);
         userAuthTokenEntity.setLoginAt(issuedTime);
         userAuthTokenEntity.setExpiresAt(expiryTime); // why 2 columns
@@ -116,7 +116,7 @@ public class UserBusinessService {
     UserAuthTokenEntity userAuthToken =
         userDao.getAuthToken(access_token); // Fetching authtoken entity
     // Checking if the Access token entered matches the Access token in the DataBase and null check
-    if (userAuthToken != null && access_token.equals(userAuthToken.getAccess_token())) {
+    if (userAuthToken != null && access_token.equals(userAuthToken.getAccessToken())) {
       final ZonedDateTime now = ZonedDateTime.now();
       userAuthToken.setLogoutAt(now); // Setting the Logout Time of the user
       return userAuthToken;
