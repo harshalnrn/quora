@@ -83,8 +83,8 @@ public class QuestionBusinessService {
           GenericExceptionCode.ATHR_002_EDIT_QUESTION.getDescription());
     } else if (existingQuestionEntity != null && !existingQuestionEntity
         .getUserEntity()
-        .getId()
-        .equals(userAuthTokenEntity.getUsers().getId())) {
+        .getUuid()
+        .equals(userAuthTokenEntity.getUsers().getUuid())) {
       throw new AuthorizationFailedException(
           GenericExceptionCode.ATHR_003_QUES_EDIT.getCode(),
           GenericExceptionCode.ATHR_003_QUES_EDIT.getDescription());
