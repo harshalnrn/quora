@@ -81,10 +81,11 @@ public class QuestionBusinessService {
       throw new AuthorizationFailedException(
           GenericExceptionCode.ATHR_002_EDIT_QUESTION.getCode(),
           GenericExceptionCode.ATHR_002_EDIT_QUESTION.getDescription());
-    } else if (existingQuestionEntity != null && !existingQuestionEntity
-        .getUserEntity()
-        .getUuid()
-        .equals(userAuthTokenEntity.getUsers().getUuid())) {
+    } else if (existingQuestionEntity != null
+        && !existingQuestionEntity
+            .getUserEntity()
+            .getUuid()
+            .equals(userAuthTokenEntity.getUsers().getUuid())) {
       throw new AuthorizationFailedException(
           GenericExceptionCode.ATHR_003_QUES_EDIT.getCode(),
           GenericExceptionCode.ATHR_003_QUES_EDIT.getDescription());
