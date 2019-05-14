@@ -24,17 +24,20 @@ public enum GenericExceptionCode {
   ATHR_002_USER_DELETE("ATHR-002", "User is signed out"),
   ATHR_002_QUES_GET("ATHR-002", "User is signed out.Sign in first to get all questions"),
   ATHR_002_QUES_DELETE("ATHR-002", "User is signed out.Sign in first to delete a question"),
-  ATHR_002_QUES_GET_USER(
-      "ATHR-002",
-      "User is signed out.Sign in first to get all questions posted by a specific user"),
+  ATHR_002_QUES_GET_USER("ATHR-002", "User is signed out.Sign in first to get all questions posted by a specific user"),
   ATHR_002_POST_QUESTION("ATHR-002", "User is signed out.Sign in first to post a question"),
   ATHR_002_EDIT_QUESTION("ATHR-002", "User is signed out.Sign in first to edit a question"),
+  ATHR_002_ANS_CREATE("ATHR-002", "User is signed out.Sign in first to post an answer"),
+  ATHR_002_ANS_EDIT("ATHR-002", "User is signed out.Sign in first to edit an answer"),
+  ATHR_002_ANS_DELETE("ATHR-002", "User is signed out.Sign in first to delete an answer"),
+  ATHR_002_ANS_GETALL("ATHR-002", "User is signed out.Sign in first to get the answers"),
 
   /** These enum constants cover all errors related to code ATHR-003 */
   ATHR_003_QUES_EDIT("ATHR-003", "Only the question owner can edit the question"),
   ATHR_003_QUES_DELETE("ATHR-003", "Only the question owner or admin can delete the question"),
   ATHR_003_ADMIN("ATHR-003", "Unauthorized Access, Entered user is not an admin"),
-
+  ATHR_003_ANS_EDIT("ATHR-003", "Only the answer owner can edit the answer"),
+  ATHR_003_ANS_DELETE("ATHR-003", "Only the answer owner or admin can delete the answer"),
   /** These enum constants cover all errors related to code USR-001 */
   USR_001("USR-001", "User with entered uuid does not exist"),
   USR_001_QUES_GET_USER(
@@ -46,14 +49,9 @@ public enum GenericExceptionCode {
   QUES_001("QUES-001", "Entered question uuid does not exist"),
 
   QUES_001_ANS("QUES-001", "The question entered is invalid"),
-  /** These enum constants cover all errors related to code ATHR-002 */
-  ATHR_002_ANS_CREATE("ATHR-002", "User is signed out.Sign in first to post an answer"),
-  ATHR_002_ANS_EDIT("ATHR-002", "User is signed out.Sign in first to edit an answer"),
-  ATHR_002_ANS_DELETE("ATHR-002", "User is signed out.Sign in first to delete an answer"),
-  ATHR_002_ANS_GETALL("ATHR-002", "User is signed out.Sign in first to get the answers"),
+
   /** These enum constants cover all errors related to code ATHR-003 */
-  ATHR_003_ANS_EDIT("ATHR-003", "Only the answer owner can edit the answer"),
-  ATHR_003_ANS_DELETE("ATHR-003", "Only the answer owner or admin can delete the answer"),
+
   /** These enum constants cover all errors related to code ANS-001 */
   ANS_001("ANS-001", "Entered answer uuid does not exist"),
   /** These enum constants cover all errors related to code QUES-001 */

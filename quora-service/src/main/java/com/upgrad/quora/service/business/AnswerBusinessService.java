@@ -1,5 +1,6 @@
 package com.upgrad.quora.service.business;
 
+import com.upgrad.quora.service.common.GenericExceptionCode;
 import com.upgrad.quora.service.dao.AnswerDao;
 import com.upgrad.quora.service.dao.QuestionDao;
 import com.upgrad.quora.service.dao.UserDao;
@@ -43,17 +44,17 @@ public class AnswerBusinessService {
 
     QuestionsEntity questionEntity = questionDao.getQuestionByUuid(questionUuid);
     if (questionEntity == null) {
-      throw new InvalidQuestionException("QUES-001", "The question entered is invalid");
+      throw new InvalidQuestionException(GenericExceptionCode.QUES_001_ANS.getCode(), GenericExceptionCode.QUES_001_ANS.getDescription());
     }
 
     UserAuthTokenEntity userAuthTokenEntity = userDao.getAuthToken(accessToken);
     if (userAuthTokenEntity == null) {
-      throw new AuthorizationFailedException("ATHR-001", "User has not signed in");
+      throw new AuthorizationFailedException(GenericExceptionCode.ATHR_001.getCode(), GenericExceptionCode.ATHR_001.getDescription());
     }
 
     if (hasUserSignedOut(userAuthTokenEntity.getLogoutAt())) {
       throw new AuthorizationFailedException(
-          "ATHR-002", "User is signed out.Sign in first to post an answer");
+          GenericExceptionCode.ATHR_002_ANS_CREATE.getCode(),GenericExceptionCode.ATHR_002_ANS_CREATE.getDescription());
     }
 
     // Populate the answerEntity with userEntity and questionEntity objects
@@ -77,18 +78,18 @@ public class AnswerBusinessService {
 
     UserAuthTokenEntity userAuthTokenEntity = userDao.getAuthToken(accessToken);
     if (userAuthTokenEntity == null) {
-      throw new AuthorizationFailedException("ATHR-001", "User has not signed in");
+      throw new AuthorizationFailedException(GenericExceptionCode.ATHR_001.getCode(), GenericExceptionCode.ATHR_001.getDescription());
     }
 
     if (hasUserSignedOut(userAuthTokenEntity.getLogoutAt())) {
       throw new AuthorizationFailedException(
-          "ATHR-002", "User is signed out.Sign in first to edit an answer");
+          GenericExceptionCode.ATHR_002_ANS_EDIT.getCode(), GenericExceptionCode.ATHR_002_ANS_EDIT.getDescription());
     }
 
     AnswerEntity existingAnswer = answerDao.getAnswerByUuid(answerUuid);
 
     if (existingAnswer == null) {
-      throw new AnswerNotFoundException("ANS-001", "Entered answer uuid does not exist");
+      throw new AnswerNotFoundException(GenericExceptionCode.ANS_001.getCode(), GenericExceptionCode.ANS_001.getDescription());
     }
 
     UserEntity loggedUser = userAuthTokenEntity.getUsers();
@@ -97,7 +98,7 @@ public class AnswerBusinessService {
     // Checks if logged in user is owner of the answer
     if (!answerOwner.getUuid().equals(loggedUser.getUuid())) {
       throw new AuthorizationFailedException(
-          "ATHR-003", "Only the answer owner can edit the answer");
+         GenericExceptionCode.ATHR_003_ANS_EDIT.getCode(), GenericExceptionCode.ATHR_003_ANS_EDIT.getDescription() );
     }
 
     existingAnswer.setAns(updatedAnswer);
@@ -117,20 +118,20 @@ public class AnswerBusinessService {
       throws AuthorizationFailedException, AnswerNotFoundException {
     UserAuthTokenEntity userAuthTokenEntity = userDao.getAuthToken(accessToken);
     if (userAuthTokenEntity == null) {
-      throw new AuthorizationFailedException("ATHR-001", "User has not signed in");
+      throw new AuthorizationFailedException(GenericExceptionCode.ATHR_001.getCode(),GenericExceptionCode.ATHR_001.getDescription());
     }
     if (hasUserSignedOut(userAuthTokenEntity.getLogoutAt())) {
       throw new AuthorizationFailedException(
-          "ATHR-002", "User is signed out.Sign in first to edit an answer");
+          GenericExceptionCode.ATHR_002_ANS_DELETE.getCode(),GenericExceptionCode.ATHR_002_ANS_DELETE.getDescription());
     }
     AnswerEntity answerEntity = answerDao.getAnswerByUuid(answerUuid);
     if (answerEntity == null) {
-      throw new AnswerNotFoundException("ANS-001", "Entered answer uuid does not exist");
+      throw new AnswerNotFoundException(GenericExceptionCode.ANS_001.getCode(), GenericExceptionCode.ANS_001.getDescription());
     }
     if (!answerEntity.getUsers().getUuid().equals(userAuthTokenEntity.getUsers().getUuid())
         && !userAuthTokenEntity.getUsers().getRole().equals("admin")) {
       throw new AuthorizationFailedException(
-          "ATHR-003", "Only the answer owner or admin can delete the answer");
+          GenericExceptionCode.ATHR_003_ANS_DELETE.getCode(), GenericExceptionCode.ATHR_003_ANS_DELETE.getDescription());
     }
     answerDao.deleteAnswer(answerEntity);
   }
@@ -160,18 +161,18 @@ public class AnswerBusinessService {
     UserAuthTokenEntity tokenEntity = userDao.getAuthToken(token);
 
     if (tokenEntity == null) {
-      throw new AuthorizationFailedException("ATHR-001", "User has not signed in");
+      throw new AuthorizationFailedException(GenericExceptionCode.ATHR_001.getCode(), GenericExceptionCode.ATHR_001.getDescription());
     }
 
     if (hasUserSignedOut(tokenEntity.getLogoutAt())) {
       throw new AuthorizationFailedException(
-          "ATHR-002", "User is signed out.Sign in first to get the answers");
+          GenericExceptionCode.ATHR_002_ANS_GETALL.getCode(), GenericExceptionCode.ATHR_002_ANS_GETALL.getDescription());
     }
 
     QuestionsEntity questionsEntity = questionDao.getQuestionByUuid(questionUuid);
     if (questionsEntity == null) {
       throw new InvalidQuestionException(
-          "QUES-001", "The question with entered uuid whose details are to be seen does not exist");
+          GenericExceptionCode.QUES_001_ANS_GETALL.getCode(), GenericExceptionCode.QUES_001_ANS_GETALL.getDescription());
     }
     return answerDao.getAnswerByQUuid(questionsEntity);
   }
